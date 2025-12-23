@@ -1,0 +1,90 @@
+/ff-topup-marketplace-next15
+├── .env.local
+├── next.config.js
+├── package.json
+├── prisma
+│   ├── schema.prisma
+│   └── migrations/
+│
+├── /app
+│   ├── layout.tsx
+│   ├── globals.css
+│   ├── page.tsx                       // Home
+│   ├── favicon.ico
+│   │
+│   ├── /auth
+│   │   ├── login/page.tsx
+│   │   ├── register/page.tsx
+│   │   └── callback/route.ts           // OAuth callback route (if needed)
+│   │
+│   ├── /shop
+│   │   ├── page.tsx                    // Browse accounts (buyer)
+│   │   └── [accountId]
+│   │       └── page.tsx                // Account detail + buy/topup CTA
+│   │
+│   ├── /topup
+│   │   ├── page.tsx                    // Top-up main (buyer: fill PlayerID, server, amount)
+│   │   └── checkout/page.tsx           // Top-up checkout & payment
+│   │
+│   ├── /orders
+│   │   └── page.tsx                    // Buyer order history & order detail
+│   │
+│   ├── /seller                         // Seller area (protected)
+│   │   ├── layout.tsx                  <<<<<< ek yaha par top-up ka comment hai 
+│   │   ├── page.tsx                    // seller dashboard
+│   │   ├── profile/page.tsx
+│   │   ├── add-account/page.tsx        // Seller adds a FreeFire account for sale
+│   │   ├── my-accounts/page.tsx        // Manage accounts
+│   │   ├── orders/page.tsx             // Account sale orders to seller
+│   │   ├── topup-orders/page.tsx       // Top-up orders received for seller to fulfill
+│   │   └── topup-orders/[id]/page.tsx  // Single topup order detail -> Approve button
+│   │
+│   ├── /admin
+│   │   ├── layout.tsx
+│   │   ├── page.tsx                    // Admin dashboard
+│   │   ├── users/page.tsx
+│   │   ├── sellers/page.tsx
+│   │   ├── all-orders/page.tsx
+│   │   └── all-topups/page.tsx
+│   │
+│   ├── /api
+│   │   ├── auth
+│   │   │   └── route.ts                // auth helpers (login, callback) OR NextAuth handler
+│   │   ├── accounts
+│   │   │   ├── route.ts                // GET list, POST create (seller)
+│   │   │   └── [id]
+│   │   │       └── route.ts            // GET, PATCH, DELETE account
+│   │   ├── orders
+│   │   │   ├── route.ts                // create order (buy account)
+│   │   │   └── [id]
+│   │   │       └── route.ts            // order status update, get
+│   │   ├── topups
+│   │   │   ├── route.ts                // buyer creates topup order
+│   │   │   └── [id]
+│   │   │       └── route.ts            // seller marks completed/approve
+│   │   ├── payments
+│   │   │   └── webhook/route.ts        // Stripe/Razorpay webhook
+│   │   └── admin
+│   │       └── route.ts
+│   │
+│   └── /components
+│       ├── Header.tsx               <<<<< ek comment yaha hai
+│       ├── Footer.tsx
+│       ├── AccountCard.tsx
+│       ├── SellerOrderList.tsx
+│       ├── TopupForm.tsx
+│       └── common UI components...
+│
+├── /lib
+│   ├── prisma.ts                       // Prisma client
+│   ├── auth.ts                         // session helpers (verify JWT, getUser)
+│   ├── payment.ts                      // payment helpers
+│   └── topupService.ts                 // topup fulfillment helpers
+│
+├── /middleware.ts                      // route protection, role-based redirect
+├── /public
+│   └── /uploads
+│
+├── /scripts
+│   └── seed.ts
+└── README.md

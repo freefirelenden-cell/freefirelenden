@@ -1,15 +1,8 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import Navbar from "./components/Navabar";
+import Footer from "./components/Footer";
+import Providers from "./provider";
+import { AuthProvider } from "./context/AuthProvider";
 
 export const metadata = {
   title: "Create Next App",
@@ -19,10 +12,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <head>
+        <link
+          href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css"
+          rel="stylesheet"
+          precedence="default"
+        />
+      </head>
+      <body className={`antialiased`}>
+        <Providers>
+          <AuthProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );

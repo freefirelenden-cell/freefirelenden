@@ -1,0 +1,65 @@
+evergreen/
+└── app/
+    ├── layout.js                    # Root layout (Navbar + Footer included)
+    ├── page.js                      # Home Page (Hero + Statistics + HowItWorks + Testimonials + CTA)
+    ├── globals.css                  # Global styles and CSS variables
+    ├── components/                  # Reusable components folder
+    │   ├── Navbar.js
+    │   ├── Footer.js
+    │   ├── Hero.js                  # Main hero section
+    │   ├── StatisticsSection.js     # Statistics component
+    │   ├── HowItWorks.js            # Process steps
+    │   ├── TestimonialsSection.js   # Testimonials
+    │   ├── CTASection.js            # Call to Action
+    │   └── FeaturedLocations.js     # Locations list
+    │
+    ├── about/                       # ABOUT PAGES (4 pages)
+    │   ├── page.js                  # About Evergreen NGO (Main)
+    │   ├── mission/
+    │   │   └── page.js              # Our Mission page
+    │   ├── team/
+    │   │   └── page.js              # Team members page
+    │   └── story/
+    │       └── page.js              # Our Story page
+    │
+    ├── donate/                      # DONATION PAGES (2 pages)
+    │   ├── page.js                  # Donation Page (Payment form)
+    │   └── success/
+    │       └── page.js              # Payment Success Page
+    │
+    ├── trees/                       # TREES PAGES (4 pages)
+    │   ├── page.js                  # Trees Overview
+    │   ├── planted/
+    │   │   └── page.js              # List of planted trees
+    │   ├── pending/
+    │   │   └── page.js              # Pending plantations
+    │   └── locations/
+    │       └── page.js              # Plantation locations
+    │
+    ├── finances/                    # FINANCE PAGES (2 pages)
+    │   ├── page.js                  # Total fund overview
+    │   └── reports/
+    │       └── page.js              # Detailed reports
+    │
+    ├── volunteers/                  # VOLUNTEER PAGE (1 page)
+    │   └── page.js                  # Volunteer registration
+    │
+    ├── contact/                     # CONTACT PAGE (1 page)
+    │   └── page.js                  # Contact form
+    │
+    ├── faq/                         # FAQ PAGE (1 page)
+    │   └── page.js                  # Frequently asked questions
+    │
+    └── admin/                       # ADMIN PAGES (9 pages)
+        ├── page.js                  # Admin Dashboard
+        ├── trees/                   # Tree management
+        │   ├── add/
+        │   │   └── page.js          # Add new tree
+        │   ├── update/
+        │   │   └── page.js          # Update trees
+        │   └── pending/
+        │       └── page.js          # Manage pending
+        ├── donations/
+        │   └── page.js              # View all donations
+        └── locations/
+            └── page.js              # Manage locations
