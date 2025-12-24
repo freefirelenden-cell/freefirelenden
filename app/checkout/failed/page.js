@@ -7,10 +7,7 @@ import Link from "next/link";
 export default function CheckoutFailedPage() {
   const router = useRouter();
 
-  const retryPayment = () => {
-    // In real app, this would redirect to retry payment
-    router.push("/checkout?retry=true");
-  };
+  const retryPayment = () => router.push("/checkout?retry=true");
 
   return (
     <div className="min-h-screen bg-gray-50">

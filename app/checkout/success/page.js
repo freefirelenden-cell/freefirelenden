@@ -1,18 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function CheckoutSuccessPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [platformFee, setPlatformFee] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+
     const orderId = searchParams.get("orderId");
     if (!orderId) {
       router.push("/");
@@ -45,7 +46,7 @@ export default function CheckoutSuccessPage() {
     }
 
     loadOrder();
-  }, [searchParams, router]);
+  }, [router]);
 
   const handleDownloadReceipt = () => {
     if (!order) return;
@@ -138,7 +139,7 @@ Order Status: ${order.status}
       {
         step: 3,
         title: "Confirmation",
-        description: order.buyer?.email 
+        description: order.buyer?.email
           ? `Check your email (${order.buyer.email}) for order confirmation`
           : "You will receive SMS confirmation",
       },
@@ -181,12 +182,11 @@ Order Status: ${order.status}
               <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold">Order Details</h2>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    order.status === "completed" ? "bg-green-100 text-green-800" :
-                    order.status === "processing" ? "bg-blue-100 text-blue-800" :
-                    order.status === "cancelled" ? "bg-red-100 text-red-800" :
-                    "bg-yellow-100 text-yellow-800"
-                  }`}>
+                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === "completed" ? "bg-green-100 text-green-800" :
+                      order.status === "processing" ? "bg-blue-100 text-blue-800" :
+                        order.status === "cancelled" ? "bg-red-100 text-red-800" :
+                          "bg-yellow-100 text-yellow-800"
+                    }`}>
                     {order.status.toUpperCase()}
                   </span>
                 </div>
@@ -227,9 +227,8 @@ Order Status: ${order.status}
                         </div>
                         <div>
                           <div className="text-sm text-gray-600">Payment Status</div>
-                          <div className={`font-medium ${
-                            order.payment?.status === "paid" ? "text-green-600" : "text-yellow-600"
-                          }`}>
+                          <div className={`font-medium ${order.payment?.status === "paid" ? "text-green-600" : "text-yellow-600"
+                            }`}>
                             {order.payment?.status?.toUpperCase() || "N/A"}
                           </div>
                         </div>
@@ -350,21 +349,19 @@ Order Status: ${order.status}
                 <h3 className="font-bold mb-4">Order Status</h3>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${
-                      order.payment?.status === "paid" 
-                        ? "bg-green-500 text-white" 
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${order.payment?.status === "paid"
+                        ? "bg-green-500 text-white"
                         : "bg-gray-300 text-gray-600"
-                    }`}>
+                      }`}>
                       ✓
                     </span>
                     <span>Payment {order.payment?.status === "paid" ? "Confirmed" : "Pending"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${
-                      order.status !== "pending" 
-                        ? "bg-green-500 text-white" 
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${order.status !== "pending"
+                        ? "bg-green-500 text-white"
                         : "bg-gray-300 text-gray-600"
-                    }`}>
+                      }`}>
                       {order.status !== "pending" ? "✓" : "2"}
                     </span>
                     <span>Order Processing</span>

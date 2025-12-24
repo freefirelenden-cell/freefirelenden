@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getAccountById } from "@/lib/apiClient";
 import { useAuth } from "../context/AuthProvider";
@@ -10,7 +10,6 @@ import Image from "next/image";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [orderType, setOrderType] = useState(null);
@@ -46,6 +45,7 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     // Get order details from URL params
+    const searchParams = new URLSearchParams(window.location.search);
     const type = searchParams.get("type"); // "account" or "topup"
     const accountId = searchParams.get("accountId");
     const diamonds = searchParams.get("diamonds");
@@ -63,7 +63,7 @@ export default function CheckoutPage() {
       // Redirect if no valid order
       router.push("/shop");
     }
-  }, [searchParams, router]);
+  }, [router]);
 
   const loadAccount = async (accountId) => {
     try {
@@ -224,7 +224,7 @@ export default function CheckoutPage() {
         console.error(orderResult.error)
         return;
       }
-      
+
       await fetch(`/api/orders/${orderResult.orderId}/pay`, {
         method: "PATCH",
       });
