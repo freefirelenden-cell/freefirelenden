@@ -90,7 +90,7 @@ Order Status: ${order.status}
 
 
   useEffect(() => {
-  if (!order?._id) return;
+  if (!order?._id || order) return;
 
   const key = `receipt-downloaded-${order._id}`;
   const alreadyDownloaded = localStorage.getItem(key);
@@ -100,7 +100,7 @@ Order Status: ${order.status}
     handleDownloadReceipt();
     localStorage.setItem(key, "true");
   }
-}, [order._id]);
+}, [order]);
 
 
   if (loading) {
