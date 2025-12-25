@@ -87,6 +87,22 @@ Order Status: ${order.status}
     a.click();
   };
 
+
+
+  useEffect(() => {
+  if (!order?._id) return;
+
+  const key = `receipt-downloaded-${order._id}`;
+  const alreadyDownloaded = localStorage.getItem(key);
+
+  // ✅ sirf pehli baar
+  if (!alreadyDownloaded) {
+    handleDownloadReceipt();
+    localStorage.setItem(key, "true");
+  }
+}, [order._id]);
+
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -183,9 +199,9 @@ Order Status: ${order.status}
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold">Order Details</h2>
                   <span className={`px-3 py-1 rounded-full text-sm font-medium ${order.status === "completed" ? "bg-green-100 text-green-800" :
-                      order.status === "processing" ? "bg-blue-100 text-blue-800" :
-                        order.status === "cancelled" ? "bg-red-100 text-red-800" :
-                          "bg-yellow-100 text-yellow-800"
+                    order.status === "processing" ? "bg-blue-100 text-blue-800" :
+                      order.status === "cancelled" ? "bg-red-100 text-red-800" :
+                        "bg-yellow-100 text-yellow-800"
                     }`}>
                     {order.status.toUpperCase()}
                   </span>
@@ -350,8 +366,8 @@ Order Status: ${order.status}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${order.payment?.status === "paid"
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-300 text-gray-600"
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-300 text-gray-600"
                       }`}>
                       ✓
                     </span>
@@ -359,8 +375,8 @@ Order Status: ${order.status}
                   </div>
                   <div className="flex items-center gap-2">
                     <span className={`w-6 h-6 rounded-full flex items-center justify-center text-sm ${order.status !== "pending"
-                        ? "bg-green-500 text-white"
-                        : "bg-gray-300 text-gray-600"
+                      ? "bg-green-500 text-white"
+                      : "bg-gray-300 text-gray-600"
                       }`}>
                       {order.status !== "pending" ? "✓" : "2"}
                     </span>

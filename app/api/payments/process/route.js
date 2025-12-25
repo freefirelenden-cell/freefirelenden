@@ -1,14 +1,13 @@
 import { processDirectPayment } from "@/lib/paymentHandler";
 import Account from "@/models/Account";
-import Seller from "@/models/Seller";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
     try {
         const data = await req.json();
-        const { accountId, accountPrice, paymentMethod, name, email, phone, sellerId, buyerId } = data
+        const { accountId, accountPrice, paymentMethod, name, email, phone, sellerId, seller, buyerId } = data
 
-        if (!accountId || !accountPrice || !name || !email || !phone || !sellerId, !buyerId) {
+        if (!accountId || !accountPrice || !name || !email || !phone || !sellerId || !buyerId || !seller) {
             return NextResponse.json(
                 { success: false, error: "Missing required fields" },
                 { status: 400 }
@@ -30,7 +29,6 @@ export async function POST(req) {
             );
         }
 
-        const seller = await Seller.findOne({ userId: sellerId });
         if (!seller) {
             return NextResponse.json(
                 { success: false, error: "Seller not found" },
@@ -50,8 +48,8 @@ export async function POST(req) {
         });
 
         if (paymentResult.success) {
-            account.status = "sold";
-            await account.save();
+            // account.status = "sold";
+            // await account.save();
 
             return NextResponse.json(
                 { success: true, payment: paymentResult.data },

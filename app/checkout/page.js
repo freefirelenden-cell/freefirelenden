@@ -174,7 +174,16 @@ export default function CheckoutPage() {
 
     try {
 
-      // create order
+      const sellerResponse = await fetch(`/api/seller/${account.createdBy}`)
+
+      if (!sellerResponse.ok) {
+        console.error("Error fetching seller data:", sellerResponse.statusText);
+        return; // Yahan return ya error handling kar sakte ho
+      }
+      const seller = await sellerResponse.json(); // Response ko JSON format mein convert karna
+
+        
+
       const paymentResponse = await fetch('/api/payments/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -182,6 +191,7 @@ export default function CheckoutPage() {
           accountId: account._id,
           accountPrice: account.price,
           sellerId: account.createdBy,
+          seller,
           buyerId: user._id,
           name: formData.name,
           email: formData.email,
@@ -189,6 +199,7 @@ export default function CheckoutPage() {
           paymentMethod: formData.paymentMethod
         })
       });
+      
       const paymentResult = await paymentResponse.json();
 
       if (!paymentResponse.ok) {
@@ -210,8 +221,11 @@ export default function CheckoutPage() {
           paymentAccount: formData.paymentAccount,
           phone: formData.phone,
           paymentId: paymentResult.payment.paymentId,
+          seller,
+          account
         }),
       });
+     
       const orderResult = await orderResponse.json();
 
       if (!paymentResult.success) {
@@ -229,6 +243,23 @@ export default function CheckoutPage() {
         method: "PATCH",
       });
 
+      const mailRes = await fetch("/api/send-mail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sellerEmail: seller.email,
+          sellerPhone: seller.phone,
+          buyerEmail: formData.email,
+          buyerName: formData.name,
+          buyerPhone: formData.phone,
+          accountTitle: account.title,
+          email: account.email,
+          accountId: account._id,
+          amount: account.price,
+          orderId: orderResult.orderId
+        })
+      });
+  
 
       router.push(`/checkout/success?orderId=${orderResult.orderId}`);
 

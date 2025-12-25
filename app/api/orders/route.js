@@ -58,18 +58,16 @@ export async function POST(req) {
     await connectDB();
 
     const body = await req.json();
-    const { accountId, paymentMethod, paymentAccount, paymentId, phone } = body;
+    const { accountId, paymentMethod, paymentAccount, paymentId, phone, seller, account } = body;
 
     if (!accountId || !paymentMethod) {
       return NextResponse.json({ error: "Missing data" }, { status: 400 });
     }
 
-    const account = await Account.findById(accountId);
     
     if (!account) {
       return NextResponse.json({ error: "Account not found" }, { status: 404 });
     }
-    const seller = await Seller.findOne({ userId: account.createdBy });
     if (!seller) {
       return NextResponse.json({ error: "Seller not found" }, { status: 404 });
     }
