@@ -9,6 +9,15 @@ import Image from "next/image";
 
 
 export default function CheckoutPage() {
+
+  const CALL_NUMBER = process.env.NEXT_PUBLIC_CALL_NUMBER
+  const MESSAGE_NUMBER = process.env.NEXT_PUBLIC_MESSAGE_NUMBER
+  const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+  const COMMISSION_PAR_ACCOUNT = parseFloat(process.env.NEXT_PUBLIC_COMMISSION_PAR_ACCOUNT);
+  const COMMISSION_PAR_TOPUP = parseFloat(process.env.NEXT_PUBLIC_COMMISSION_PAR_TOPUP);
+
+
+
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -182,7 +191,7 @@ export default function CheckoutPage() {
       }
       const seller = await sellerResponse.json(); // Response ko JSON format mein convert karna
 
-        
+
 
       const paymentResponse = await fetch('/api/payments/process', {
         method: 'POST',
@@ -199,7 +208,7 @@ export default function CheckoutPage() {
           paymentMethod: formData.paymentMethod
         })
       });
-      
+
       const paymentResult = await paymentResponse.json();
 
       if (!paymentResponse.ok) {
@@ -225,7 +234,7 @@ export default function CheckoutPage() {
           account
         }),
       });
-     
+
       const orderResult = await orderResponse.json();
 
       if (!paymentResult.success) {
@@ -259,7 +268,7 @@ export default function CheckoutPage() {
           orderId: orderResult.orderId
         })
       });
-  
+
 
       router.push(`/checkout/success?orderId=${orderResult.orderId}`);
 
@@ -310,7 +319,7 @@ export default function CheckoutPage() {
   }
 
   const totalAmount = account.price;
-  const platformFee = totalAmount * (orderType === "account" ? 0.05 : 0.03);
+  const platformFee = totalAmount * (orderType === "account" ? COMMISSION_PAR_ACCOUNT / 100 : COMMISSION_PAR_TOPUP / 100);
   const grandTotal = totalAmount + platformFee;
 
   return (
@@ -631,7 +640,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Platform Fee ({orderType === "account" ? "5%" : "3%"})</span>
+                    <span className="text-gray-600">Platform Fee ({orderType === "account" ? `${COMMISSION_PAR_ACCOUNT}%` : `${COMMISSION_PAR_TOPUP}%`})</span>
                     <span className="font-medium">PKR {platformFee.toLocaleString()}</span>
                   </div>
 
@@ -686,7 +695,7 @@ export default function CheckoutPage() {
                   <div className="flex items-center gap-3">
                     <span className="text-xl">📞</span>
                     <div>
-                      <div className="font-medium">0300-FFLENDEN</div>
+                      <div className="font-medium">{CALL_NUMBER}</div>
                       <div className="text-sm text-gray-600">24/7 Support</div>
                     </div>
                   </div>

@@ -29,7 +29,7 @@ export async function POST(req) {
 
 
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: `"LendenFF" <${process.env.EMAIL_USER}>`,
             to: buyerEmail,
             subject: `Your purchased account details Order #${orderId}`,
 
@@ -50,13 +50,13 @@ export async function POST(req) {
     Email: ${sellerEmail}<br/>
     Phone: ${sellerPhone}</p>
 
-    <p>- FreeFireLenden Team</p>
+    <p>- LendenFF Team</p>
   `
         });
 
 
         await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+            from: `"LendenFF" <${process.env.EMAIL_USER}>`,
             to: sellerEmail,
             subject: `Your account has been purchased! Order #${orderId}`,
             html: `
@@ -74,7 +74,7 @@ export async function POST(req) {
 
     <p>Please contact the buyer and provide account login details.</p>
 
-    <p>- FreeFireLenden Team</p>
+    <p>- LendenFF Team</p>
   `
         });
 

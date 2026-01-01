@@ -13,11 +13,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+          <link rel="icon" href="/logo.png" />
         <link
           href="https://cdn.jsdelivr.net/npm/remixicon@4.7.0/fonts/remixicon.css"
           rel="stylesheet"
           precedence="default"
         />
+        
       </head>
       <body className={`antialiased`}>
         <Providers>

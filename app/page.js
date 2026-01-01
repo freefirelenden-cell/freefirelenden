@@ -3,11 +3,14 @@
 import { useState, useEffect } from "react";
 import AccountCard from "./components/AccountCard";
 import Button from "./components/Button";
-import { getAllAccounts } from "@/lib/apiClient";
 import { useRouter } from "next/navigation";
 import LoadingSpiner from "./components/ui/LoadingSpiner";
 
 export default function Home() {
+  const CALL_NUMBER = process.env.NEXT_PUBLIC_CALL_NUMBER
+  const MESSAGE_NUMBER = process.env.NEXT_PUBLIC_MESSAGE_NUMBER
+  const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+
   const router = useRouter();
   const [featuredAccounts, setFeaturedAccounts] = useState([]);
   const [stats, setStats] = useState({
@@ -57,8 +60,12 @@ export default function Home() {
     const fetchData = async () => {
       setLoading(true)
       try {
-        const res = await getAllAccounts();
-        setFeaturedAccounts(res.accounts);
+        const params = new URLSearchParams({ ...{}, page: 1, limit: 12 }).toString();
+        const res = await fetch(`/api/accounts?${params}`, { cache: "no-store", });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "API Error");
+        setFeaturedAccounts(data.accounts);
+
       } catch (error) {
         console.error(error)
       } finally {
@@ -173,19 +180,19 @@ export default function Home() {
         <div className="relative z-10 text-center px-6 max-w-4xl">
           <div className="inline-flex items-center bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
             <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>
-            🇵🇰 Pakistan's #1 Free Fire Marketplace
+            🇵🇰 Pakistan's #1 FF Marketplace
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold leading-tight drop-shadow-sm">
-            FreeFire<span className="text-yellow-500">Lenden</span>
+            Lenden<span className="text-yellow-500">FF</span>
           </h1>
 
           <p className="text-2xl md:text-3xl font-bold text-gray-800 mt-4">
-            <span className="text-blue-600">Buy & Sell</span> Free Fire Accounts Securely
+            <span className="text-blue-600">Buy & Sell</span> Accounts Securely
           </p>
 
           <p className="text-gray-700 text-lg md:text-xl mt-6 max-w-2xl mx-auto">
-            Pakistan's most trusted platform for Free Fire account trading.
+            Pakistan's most trusted platform for FF account trading.
             <span className="text-blue-600 font-semibold"> Verified sellers</span>,
             <span className="text-green-600 font-semibold"> instant delivery</span>, and
             <span className="text-red-600 font-semibold"> 100% scam protection</span>.
@@ -193,16 +200,17 @@ export default function Home() {
 
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             <Button
-              text="🎮 Browse Accounts"
+              text="Browse Accounts"
               onClick={() => router.push("/shop")}
               className="bg-yellow-500 hover:bg-yellow-400 text-black px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
             />
             <Button
-              text="💰 Start Selling"
+              text="Start Selling"
+              onClick={() => router.push("/become-seller")}
               className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
             />
             <Button
-              text="⚡ Top-Up Diamonds"
+              text="Top-Up Diamonds"
               className="bg-purple-600 hover:bg-purple-500 text-white px-10 py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1"
             />
           </div>
@@ -227,7 +235,7 @@ export default function Home() {
           </div>
 
           <p className="text-sm text-gray-500 mt-8">
-            Trusted by 5000+ Free Fire Players across Pakistan • Fastest Delivery • 24/7 Support
+            Trusted by 5000+ FF Players across Pakistan • Fastest Delivery • 24/7 Support
           </p>
         </div>
 
@@ -245,10 +253,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold">
-              Why <span className="text-yellow-600">Choose</span> FreeFireLenden?
+              Why <span className="text-yellow-600">Choose</span> LendenFF?
             </h2>
             <p className="text-gray-600 mt-4 text-lg">
-              The safest and fastest way to buy/sell Free Fire accounts in Pakistan
+              The safest and fastest way to buy/sell accounts in Pakistan
             </p>
           </div>
 
@@ -320,7 +328,7 @@ export default function Home() {
               🔥 TRENDING IN PAKISTAN
             </div>
             <h2 className="text-4xl md:text-5xl font-bold">
-              Top Selling Free Fire Accounts
+              Top Selling FF Accounts
             </h2>
             <p className="text-gray-600 mt-4 text-lg">
               Most popular accounts bought by Pakistani players this week
@@ -377,10 +385,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold">
-              How <span className="text-yellow-600">FreeFireLenden</span> Works?
+              How <span className="text-yellow-600">LendenFF</span> Works?
             </h2>
             <p className="text-gray-600 mt-4 text-lg">
-              3 Simple Steps to Get Your Dream Free Fire Account
+              3 Simple Steps to Get Your Dream FF Account
             </p>
           </div>
 
@@ -474,14 +482,15 @@ export default function Home() {
                   we're here to help!
                 </p>
                 <div className="flex items-center gap-4">
-                  <Button
-                    text="WhatsApp Support"
-                    className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-semibold"
-                  />
-                  <Button
-                    text="Call Now"
+                  <a
+                    href={`https://wa.me/${WHATSAPP_NUMBER}`}
+                    className="bg-green-600 hover:bg-green-500 text-white px-6 py-3 rounded-xl font-semibold text-center"
+                  >WhatsApp Support</a>
+
+                  <a
+                    href={`https://wa.me/${CALL_NUMBER}`}
                     className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold"
-                  />
+                  >Call Now</a>
                 </div>
               </div>
               <div className="bg-white p-6 rounded-2xl shadow-lg">
@@ -491,22 +500,22 @@ export default function Home() {
                   </div>
                   <div>
                     <div className="font-bold">24/7 Support Numbers</div>
-                    <div className="text-blue-600 font-semibold">0300-1234567</div>
-                    <div className="text-blue-600 font-semibold">0312-7654321</div>
+                    <div className="text-blue-600 font-semibold">{CALL_NUMBER}</div>
+                    {/* <div className="text-blue-600 font-semibold">0312-7654321</div> */}
                   </div>
                 </div>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  {/* <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span>Karachi Support</span>
                     <span className="font-semibold">021-12345678</span>
                   </div>
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span>Lahore Support</span>
                     <span className="font-semibold">042-12345678</span>
-                  </div>
+                  </div> */}
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <span>WhatsApp</span>
-                    <span className="font-semibold">0300-FFLENDEN</span>
+                    <span className="font-semibold">{WHATSAPP_NUMBER}</span>
                   </div>
                 </div>
               </div>
@@ -525,7 +534,7 @@ export default function Home() {
               Become a Verified Seller
             </h2>
             <p className="text-blue-200 mt-4 text-lg max-w-3xl mx-auto">
-              Join Pakistan's most trusted Free Fire marketplace and start earning today
+              Join Pakistan's most trusted FF marketplace and start earning today
             </p>
           </div>
 
@@ -534,7 +543,7 @@ export default function Home() {
               <div className="text-3xl mb-6">💰</div>
               <h3 className="text-2xl font-bold mb-4">Earn Money</h3>
               <p className="text-blue-100">
-                Sell your unused Free Fire accounts and earn instant cash.
+                Sell your unused FF accounts and earn instant cash.
                 Average sellers earn 15,000-50,000 PKR per month.
               </p>
             </div>
@@ -594,7 +603,7 @@ export default function Home() {
               What Pakistani Players Say
             </h2>
             <p className="text-gray-600 mt-4 text-lg">
-              Real reviews from our Free Fire community
+              Real reviews from our FF community
             </p>
           </div>
 
@@ -667,7 +676,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700">
-                "Previously got scammed twice on Facebook. FreeFireLenden's verification saved me!"
+                "Previously got scammed twice on Facebook. LendenFF's verification saved me!"
               </p>
             </div>
 
@@ -699,7 +708,7 @@ export default function Home() {
               Frequently Asked Questions
             </h2>
             <p className="text-gray-600 mt-4 text-lg">
-              Everything you need to know about FreeFireLenden
+              Everything you need to know about LendenFF
             </p>
           </div>
 
@@ -750,7 +759,7 @@ export default function Home() {
             Ready to Level Up?
           </h2>
           <p className="text-xl mb-10 opacity-90">
-            Join thousands of Pakistani Free Fire players who trust FreeFireLenden
+            Join thousands of Pakistani FF players who trust LendenFF
           </p>
 
           <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
@@ -767,7 +776,7 @@ export default function Home() {
 
           <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8">
             <h3 className="text-2xl font-bold mb-6">
-              FreeFireLenden in Numbers
+              LendenFF in Numbers
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               <div>
@@ -794,7 +803,7 @@ export default function Home() {
               🇵🇰 Proudly Serving Pakistan Since 2023
             </p>
             <p className="opacity-90">
-              FreeFireLenden is Pakistan's first and largest dedicated Free Fire marketplace.
+              LendenFF is Pakistan's first and largest dedicated FF marketplace.
               We're committed to providing safe, fast, and reliable services to the Pakistani gaming community.
             </p>
           </div>

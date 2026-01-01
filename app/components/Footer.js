@@ -6,9 +6,9 @@ export default function Footer() {
   const quickLinks = [
     { name: "Home", href: "/" },
     { name: "Browse Accounts", href: "/shop" },
-    { name: "Diamond Top-Up", href: "/topup" },
+    // { name: "Diamond Top-Up", href: "/topup" },
     { name: "Become Seller", href: "/seller" },
-    { name: "My Orders", href: "/orders" },
+    // { name: "My Orders", href: "/orders" },
   ];
 
   const helpLinks = [
@@ -36,10 +36,10 @@ export default function Footer() {
               <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-xl">FF</span>
               </div>
-              <span className="text-xl font-bold">FreeFire<span className="text-yellow-400">Lenden</span></span>
+              <span className="text-xl font-bold">Lenden<span className="text-yellow-400">FF</span></span>
             </div>
             <p className="text-gray-400 text-sm">
-              Pakistan's #1 Free Fire Account Marketplace. Buy & sell accounts safely with instant delivery.
+              Pakistan's #1 FF Account Marketplace. Buy & sell accounts safely with instant delivery.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social) => (
@@ -97,14 +97,14 @@ export default function Footer() {
                 <span className="text-yellow-400">📧</span>
                 <div>
                   <p className="font-medium">Email</p>
-                  <p className="text-gray-400 text-sm">support@freefirelenden.pk</p>
+                  <p className="text-gray-400 text-sm">freefirelenden@gmail.com</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-yellow-400">📞</span>
                 <div>
                   <p className="font-medium">Phone</p>
-                  <p className="text-gray-400 text-sm">0300-1234567</p>
+                  <p className="text-gray-400 text-sm">0309-1186958</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -136,7 +136,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="mt-8 pt-8 border-t border-gray-800 text-center">
           <p className="text-gray-400 text-sm">
-            © {currentYear} FreeFireLenden. All rights reserved. This site is not affiliated with Garena Free Fire.
+            © {currentYear} LendenFF. All rights reserved. This site is not affiliated with Garena FF.
           </p>
           <p className="text-gray-500 text-xs mt-2">
             🇵🇰 Proudly serving the Pakistani gaming community

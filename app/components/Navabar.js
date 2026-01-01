@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import UserProfile from "./UserProfile";
 import { useAuth } from "../context/AuthProvider";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -35,11 +36,11 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xl">FF</span>
-              </div>
-              <span className="text-xl font-bold text-gray-900">FreeFire<span className="text-yellow-500">Lenden</span></span>
+            <Link href="/" className="flex items-center ">
+                <span className="text-white font-bold text-xl">
+                  <Image src="/logo.png" height={50} width={50} alt="LendenFF Logo" />
+                </span>
+              <span className="text-xl font-bold text-gray-900">Lenden<span className="text-yellow-500">FF</span></span>
             </Link>
           </div>
 

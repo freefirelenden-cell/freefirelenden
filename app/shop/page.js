@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import AccountCard from "../components/AccountCard";
-import { getAllAccounts } from "@/lib/apiClient";
 
 
 export default function ShopPage() {
@@ -18,11 +17,20 @@ export default function ShopPage() {
 
   // Sample account data (in real app, fetch from API)
   useEffect(() => {
-    async function loadAccounts() {
-      setLoading(true);
-      const response = await getAllAccounts(filters);
-      setAccounts(response.accounts);
-      setLoading(false);
+
+    async function loadAccounts(filters = {}, page = 1, limit = 12) {
+      try {
+        setLoading(true);
+        const params = new URLSearchParams({ ...filters, page, limit, }).toString();
+        const res = await fetch(`/api/accounts?${params}`, { cache: "no-store" });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "API Error");
+        setAccounts(data.accounts);
+        setLoading(false);
+      } catch (err) {
+        console.error("❌ getAllAccounts Error:", err.message);
+        return [];
+      }
     }
 
     loadAccounts();
@@ -104,14 +112,14 @@ export default function ShopPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
+
       <div className="pt-20">
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-12">
           <div className="max-w-7xl mx-auto px-4">
-            <h1 className="text-4xl font-bold mb-4">Browse Free Fire Accounts</h1>
+            <h1 className="text-4xl font-bold mb-4">Browse FF Accounts</h1>
             <p className="text-blue-100 text-lg">
-              Find your perfect Free Fire account from our verified sellers. Secure transactions, instant delivery.
+              Find your perfect FF account from our verified sellers. Secure transactions, instant delivery.
             </p>
           </div>
         </div>
@@ -128,7 +136,7 @@ export default function ShopPage() {
                   All accounts are verified and ready for instant delivery
                 </p>
               </div>
-              
+
               <div className="flex items-center gap-4 mt-4 md:mt-0">
                 {/* Sort Dropdown */}
                 <div className="relative">
@@ -353,7 +361,7 @@ export default function ShopPage() {
 
           {/* Info Section */}
           <div className="mt-12 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-8">
-            <h3 className="text-2xl font-bold mb-4 text-center">Why Buy from FreeFireLenden?</h3>
+            <h3 className="text-2xl font-bold mb-4 text-center">Why Buy from LendenFF?</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
               <div className="text-center">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">

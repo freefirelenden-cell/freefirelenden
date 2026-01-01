@@ -232,7 +232,7 @@ export default function AccountDetailPage() {
                                 {/* Account Info */}
                                 <div className="grid grid-cols-2 gap-4 mb-6">
                                     <div className="bg-gray-50 p-3 rounded-lg">
-                                        <div className="text-sm text-gray-500">Free Fire UID</div>
+                                        <div className="text-sm text-gray-500">FF UID</div>
                                         <div className="font-mono font-bold">{account.uid}</div>
                                     </div>
                                     {/* <div className="bg-gray-50 p-3 rounded-lg">

@@ -88,3 +88,15 @@
 ├── /scripts
 │   └── seed.ts
 └── README.md
+
+
+
+
+
+need fix later  
+
+footer /help/
+
+contact
+
+home
