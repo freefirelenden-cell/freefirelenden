@@ -241,7 +241,7 @@ export default function BecomeSellerPage() {
                         {errors.phone && (
                           <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
                         )}
-                        <p className="text-sm text-gray-500 mt-1">We'll verify this number via SMS</p>
+                        <p className="text-sm text-gray-500 mt-1">{`We'll verify this number via SMS`}</p>
                       </div>
                       
                       <div>
@@ -520,7 +520,7 @@ export default function BecomeSellerPage() {
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">Can I sell both accounts and top-ups?</div>
-                    <div className="text-sm text-gray-600">Yes, select "Both Services" during registration</div>
+                    <div className="text-sm text-gray-600">{`Yes, select "Both Services" during registration`}</div>
                   </div>
                 </div>
               </div>

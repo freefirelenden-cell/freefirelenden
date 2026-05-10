@@ -21,6 +21,7 @@ export default function UserProfile({ showName = false }) {
     setDropdownOpen(false);
   };
 
+
   return (
     <div className=" items-center">
       {!session ? (

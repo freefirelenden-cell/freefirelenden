@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 
 export default function AdminAllOrdersPage() {
+  const COMMISSION_PAR_ACCOUNT = parseFloat(process.env.NEXT_PUBLIC_COMMISSION_PAR_ACCOUNT);
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -13,100 +15,47 @@ export default function AdminAllOrdersPage() {
   });
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setOrders([
-        {
-          id: "ORD001",
-          account: "Diamond Tier FF Account",
-          buyer: "Ali Ahmed",
-          seller: "Ahmed Raza",
-          price: 3500,
-          status: "completed",
-          date: "2024-01-15",
-          paymentMethod: "JazzCash",
-          deliveryTime: "5 minutes",
-          commission: 175
-        },
-        {
-          id: "ORD002",
-          account: "Heroic Season 28 Account",
-          buyer: "Sara Khan",
-          seller: "Sara Khan",
-          price: 5200,
-          status: "pending",
-          date: "2024-01-14",
-          paymentMethod: "EasyPaisa",
-          deliveryTime: "Pending",
-          commission: 260
-        },
-        {
-          id: "ORD003",
-          account: "Platinum VIP Account",
-          buyer: "Bilal Raza",
-          seller: "Bilal Ahmed",
-          price: 2500,
-          status: "processing",
-          date: "2024-01-13",
-          paymentMethod: "Bank Transfer",
-          deliveryTime: "15 minutes",
-          commission: 125
-        },
-        {
-          id: "ORD004",
-          account: "Gold Rank Account",
-          buyer: "Usman Ali",
-          seller: "Usman Ali",
-          price: 1800,
-          status: "completed",
-          date: "2024-01-12",
-          paymentMethod: "JazzCash",
-          deliveryTime: "8 minutes",
-          commission: 90
-        },
-        {
-          id: "ORD005",
-          account: "Silver Starter Account",
-          buyer: "Fatima Noor",
-          seller: "Fatima Noor",
-          price: 1200,
-          status: "cancelled",
-          date: "2024-01-11",
-          paymentMethod: "EasyPaisa",
-          deliveryTime: "N/A",
-          commission: 0
-        },
-        {
-          id: "ORD006",
-          account: "Diamond II Account",
-          buyer: "Ahmed Raza",
-          seller: "Pro FF Accounts",
-          price: 4500,
-          status: "completed",
-          date: "2024-01-10",
-          paymentMethod: "Bank Transfer",
-          deliveryTime: "12 minutes",
-          commission: 225
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/orders");
+        const data = await res.json();
+
+        if (data.success) {
+          setOrders(data.orders);
         }
-      ]);
-      setLoading(false);
-    }, 1000);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchOrders();
   }, []);
+
+
 
   const filteredOrders = orders.filter(order => {
     if (filter !== "all" && order.status !== filter) return false;
-    if (search && !order.id.includes(search) && 
-        !order.account.toLowerCase().includes(search.toLowerCase()) &&
-        !order.buyer.toLowerCase().includes(search.toLowerCase())) return false;
-    
-    if (dateRange.start && new Date(order.date) < new Date(dateRange.start)) return false;
-    if (dateRange.end && new Date(order.date) > new Date(dateRange.end)) return false;
-    
+
+    if (search) {
+      const text = search.toLowerCase();
+
+      if (
+        !order._id.toLowerCase().includes(text) &&
+        !order.buyer?.name?.toLowerCase().includes(text) &&
+        !order.seller?.name?.toLowerCase().includes(text)
+      ) return false;
+    }
+
+    if (dateRange.start && new Date(order.createdAt) < new Date(dateRange.start)) return false;
+    if (dateRange.end && new Date(order.createdAt) > new Date(dateRange.end)) return false;
+
     return true;
   });
 
   const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
       case 'completed': return 'bg-green-100 text-green-800';
       case 'processing': return 'bg-blue-100 text-blue-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
@@ -119,22 +68,36 @@ export default function AdminAllOrdersPage() {
     total: orders.length,
     completed: orders.filter(o => o.status === 'completed').length,
     pending: orders.filter(o => o.status === 'pending').length,
-    totalRevenue: orders.reduce((sum, o) => sum + o.price, 0),
-    totalCommission: orders.reduce((sum, o) => sum + o.commission, 0),
-    avgDeliveryTime: orders.filter(o => o.status === 'completed').length > 0 
-      ? Math.round(orders.filter(o => o.status === 'completed').reduce((sum, o) => {
-          const time = parseInt(o.deliveryTime);
-          return sum + (isNaN(time) ? 0 : time);
-        }, 0) / orders.filter(o => o.status === 'completed').length)
-      : 0
+    totalRevenue: orders.reduce((sum, o) => sum + (o.price || 0), 0),
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
-    // Simulate API call
-    setOrders(prev => prev.map(order => 
-      order.id === orderId ? { ...order, status: newStatus } : order
-    ));
-    alert(`Order ${orderId} status changed to ${newStatus}`);
+    try {
+      let endpoint = "";
+
+      if (newStatus === "processing") {
+        endpoint = `/api/orders/${orderId}/pay`;
+      } else if (newStatus === "completed") {
+        endpoint = `/api/orders/${orderId}/deliver`;
+      }
+
+      if (!endpoint) return;
+
+      const res = await fetch(endpoint, {
+        method: "PATCH",
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        fetchOrders(); // refresh
+      } else {
+        alert("Failed to update");
+      }
+
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (loading) {
@@ -177,8 +140,8 @@ export default function AdminAllOrdersPage() {
       <div className="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <div className="text-sm text-gray-600">Platform Commission (5%)</div>
-            <div className="text-3xl font-bold text-green-600">PKR {stats.totalCommission.toLocaleString()}</div>
+            <div className="text-sm text-gray-600">Platform Commission (${COMMISSION_PAR_ACCOUNT}%)</div>
+            {/* <div className="text-3xl font-bold text-green-600">PKR {stats.totalCommission.toLocaleString()}</div> */}
           </div>
           <div>
             <div className="text-sm text-gray-600">Seller Earnings</div>
@@ -218,7 +181,7 @@ export default function AdminAllOrdersPage() {
             </button>
           </div>
         </div>
-        
+
         {/* Date Range */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
@@ -268,23 +231,23 @@ export default function AdminAllOrdersPage() {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
+                <tr key={order._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{order.id}</div>
+                    <div className="font-medium text-gray-900">{order._id}</div>
                     <div className="text-sm text-gray-500">{order.date}</div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{order.account}</div>
+                    <div className="font-medium text-gray-900">{order.accountId._id}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div>
                       <div className="text-sm">
                         <span className="text-gray-600">Buyer: </span>
-                        <span className="font-medium">{order.buyer}</span>
+                        <span className="font-medium">{order.buyer?.name}</span>
                       </div>
                       <div className="text-sm">
                         <span className="text-gray-600">Seller: </span>
-                        <span className="font-medium">{order.seller}</span>
+                        <span className="font-medium">{order.seller?.name}</span>
                       </div>
                     </div>
                   </td>
@@ -301,7 +264,7 @@ export default function AdminAllOrdersPage() {
                       </span>
                       <select
                         value={order.status}
-                        onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
                         className="border border-gray-300 rounded-lg px-2 py-1 text-xs"
                       >
                         <option value="pending">Pending</option>
@@ -312,7 +275,7 @@ export default function AdminAllOrdersPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm">{order.paymentMethod}</div>
+                    {order.payment?.status}
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-sm">{order.deliveryTime}</div>

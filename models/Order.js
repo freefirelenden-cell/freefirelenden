@@ -22,6 +22,7 @@ const OrderSchema = new mongoose.Schema(
       name: { type: String, required: true },
       email: { type: String, required: true },
       phone: { type: String, required: true },
+      paymentAccount: { type: String, required: true },
     },
 
 
@@ -47,14 +48,22 @@ const OrderSchema = new mongoose.Schema(
       paymentId: { type: String, required: true },
       method: { type: String, required: true }, // jazzcash / easypaisa / bank / cod
       paymentAccount: { type: String, required: true },
+      screenshot: String,
       status: {
         type: String,
         required: true,
-        enum: ["pending", "paid"],
+        enum: ["pending", "seller_confirmed", "completed"],
         default: "pending",
       },
     },
 
+     verification: {
+        sellerConfirmed: { type: Boolean, default: false },
+        sellerConfirmedAt: {type: Date},
+        adminCompleted: { type: Boolean, default: false },
+        adminCompletedAt: { type: Date}
+    },
+    
     status: {
       type: String,
       required: true,

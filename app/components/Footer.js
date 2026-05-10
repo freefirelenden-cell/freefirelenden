@@ -8,7 +8,6 @@ export default function Footer() {
     { name: "Browse Accounts", href: "/shop" },
     // { name: "Diamond Top-Up", href: "/topup" },
     { name: "Become Seller", href: "/seller" },
-    // { name: "My Orders", href: "/orders" },
   ];
 
   const helpLinks = [
@@ -19,19 +18,20 @@ export default function Footer() {
     { name: "Contact Us", href: "/contact" },
   ];
 
-  const socialLinks = [
-    { name: "Facebook", icon: "📘", href: "#" },
-    { name: "WhatsApp", icon: "💬", href: "#" },
-    { name: "Instagram", icon: "📷", href: "#" },
-    { name: "Twitter", icon: "🐦", href: "#" },
-  ];
-
+  
   const legalLinks = [
     { name: "Privacy Policy", href: "/legal/privacy" },
     { name: "Terms & Conditions", href: "/legal/terms" },
     { name: "Refund Policy", href: "/legal/refund-policy" },
     { name: "Cookie Policy", href: "/legal/cookie-policy" },
     { name: "Disclaimer", href: "/legal/disclaimer" },
+  ];
+
+  const socialLinks = [
+    { name: "Facebook", icon: "📘", href: "#" },
+    { name: "WhatsApp", icon: "💬", href: "#" },
+    { name: "Instagram", icon: "📷", href: "#" },
+    { name: "Twitter", icon: "🐦", href: "#" },
   ];
 
   return (
@@ -48,7 +48,7 @@ export default function Footer() {
               <span className="text-xl font-bold">Lenden<span className="text-yellow-400">FF</span></span>
             </div>
             <p className="text-gray-400 text-sm">
-              Pakistan's #1 FF Account Marketplace. Buy & sell accounts safely with instant delivery.
+             {` Pakistan's #1 FF Account Marketplace. Buy & sell accounts safely with instant delivery.`}
             </p>
             <div className="flex flex-wrap gap-3">
               {socialLinks.map((social) => (

@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthProvider";
-import { getAccountsOrders } from "@/lib/apiClient";
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -15,8 +14,14 @@ export default function OrdersPage() {
     if (isLoading || !user) return;
     async function load() {
       try {
-        const res = await getAccountsOrders(user.id);
-        setOrders(res.orders)
+        const res = await fetch(`/api/orders?id=${user.id}`, {
+          cache: "no-store",
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "API Error");
+
+        setOrders(data.orders)
       } catch (error) {
         console.error(error, "order getting error")
       } finally {
@@ -27,7 +32,7 @@ export default function OrdersPage() {
   }, [user, isLoading])
 
 
- 
+
 
   const filteredOrders = orders.filter(order => {
     if (filter === "all") return true;
@@ -238,10 +243,10 @@ export default function OrdersPage() {
         <ol className="text-sm text-blue-700 space-y-2">
           <li>1. When order is received, contact buyer via provided phone number</li>
           <li>2. Share account credentials securely (use WhatsApp for sensitive info)</li>
-          <li>3. Transfer Gmail account to buyer's email</li>
-          <li>4. Mark order as "Processing" while transfer is in progress</li>
-          <li>5. Once buyer confirms receipt, mark as "Completed"</li>
-          <li>6. You'll receive payment within 24 hours after completion</li>
+          <li>{`3. Transfer Gmail account to buyer's email`}</li>
+          <li>{`4. Mark order as "Processing" while transfer is in progress`}</li>
+          <li>{`5. Once buyer confirms receipt, mark as "Completed"`}</li>
+          <li>{`6. You'll receive payment within 24 hours after completion`}</li>
         </ol>
       </div>
     </div>

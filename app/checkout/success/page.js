@@ -275,7 +275,7 @@ Order Status: ${order.status}
 
                   {/* What's Next */}
                   <div className="border-t pt-6">
-                    <h3 className="font-bold mb-4">What's Next?</h3>
+                    <h3 className="font-bold mb-4">{`What's Next?`}</h3>
                     <div className="space-y-4">
                       {getNextSteps().map((step, index) => (
                         <div key={index} className="flex items-start gap-3">
@@ -435,7 +435,7 @@ Order Status: ${order.status}
                 <div className="text-sm text-gray-600 space-y-2">
                   <p className="flex items-center gap-2">
                     <span className="text-green-600">✓</span>
-                    <span>24-hour refund if order doesn't match description</span>
+                    <span>{`24-hour refund if order doesn't match description`}</span>
                   </p>
                   <p className="flex items-center gap-2">
                     <span className="text-green-600">✓</span>

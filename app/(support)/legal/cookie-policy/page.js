@@ -208,12 +208,12 @@ export default function CookiePolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Do Not Track Signals</h2>
               <p className="mb-4">
-                Some browsers have a "Do Not Track" feature that lets you tell websites you do not want 
-                to have your online activities tracked.
+                {`Some browsers have a "Do Not Track" feature that lets you tell websites you do not want 
+                to have your online activities tracked.`}
               </p>
               <p>
-                Currently, we do not respond to "Do Not Track" signals because there is no standard for 
-                how websites should respond to such signals.
+                {`Currently, we do not respond to "Do Not Track" signals because there is no standard for 
+                how websites should respond to such signals.`}
               </p>
             </section>
 
@@ -244,7 +244,7 @@ export default function CookiePolicyPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">10. Contact Information</h2>
               <p className="mb-2">If you have questions about our Cookie Policy, contact us:</p>
               <p className="mb-2">
-                <strong>Email:</strong> {process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "freefirelenden@gmail.com"}
+                <strong>Email:</strong> {process.env.NEXT_PUBLIC_SUPPORT_EMAIL}
               </p>
               <p>
                 We aim to respond to cookie-related inquiries within 48 hours.

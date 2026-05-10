@@ -1,14 +1,15 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 
 export default function PaymentMethodsPage() {
   const [selectedMethod, setSelectedMethod] = useState("jazzcash");
-       const CALL_NUMBER = process.env.NEXT_PUBLIC_CALL_NUMBER;
-    const MESSAGE_NUMBER = process.env.NEXT_PUBLIC_MESSAGE_NUMBER;
-    const EASYPAISA_NUMBER = process.env.NEXT_PUBLIC_EASYPAISA_NUMBER;
-    const JAZZCASH_NUMBER = process.env.NEXT_PUBLIC_JAZZCASH_NUMBER;
+  const CALL_NUMBER = process.env.NEXT_PUBLIC_CALL_NUMBER;
+  const MESSAGE_NUMBER = process.env.NEXT_PUBLIC_MESSAGE_NUMBER;
+  const EASYPAISA_NUMBER = process.env.NEXT_PUBLIC_EASYPAISA_NUMBER;
+  const JAZZCASH_NUMBER = process.env.NEXT_PUBLIC_JAZZCASH_NUMBER;
 
 
 
@@ -166,7 +167,7 @@ export default function PaymentMethodsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      
+
       <div className="pt-20">
         {/* Hero Section */}
         <div className="bg-gradient-to-r from-green-600 to-blue-600 text-white py-16">
@@ -191,11 +192,10 @@ export default function PaymentMethodsPage() {
                 <button
                   key={method.id}
                   onClick={() => setSelectedMethod(method.id)}
-                  className={`flex flex-col items-center p-4 rounded-xl border transition-all ${
-                    selectedMethod === method.id
+                  className={`flex flex-col items-center p-4 rounded-xl border transition-all ${selectedMethod === method.id
                       ? "border-blue-500 bg-blue-50 shadow-md"
                       : "border-gray-200 bg-white hover:border-gray-300"
-                  }`}
+                    }`}
                 >
                   <div className="text-3xl mb-2">{method.icon}</div>
                   <div className="font-bold text-gray-900">{method.name}</div>
@@ -210,7 +210,7 @@ export default function PaymentMethodsPage() {
           {/* Selected Method Details */}
           {paymentMethods.find(m => m.id === selectedMethod) && (() => {
             const method = paymentMethods.find(m => m.id === selectedMethod);
-            
+
             return (
               <div className="mb-16">
                 <div className="bg-gradient-to-r rounded-2xl overflow-hidden mb-8">
@@ -223,7 +223,7 @@ export default function PaymentMethodsPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="bg-white p-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                       {/* Left Column - Steps */}
@@ -358,7 +358,7 @@ export default function PaymentMethodsPage() {
               <div className="mt-8 p-6 bg-blue-50 rounded-xl">
                 <h4 className="font-bold text-gray-900 mb-2">⚠️ Important Notice</h4>
                 <p className="text-gray-700">
-                  Never make payments to personal numbers not listed on our official website. 
+                  Never make payments to personal numbers not listed on our official website.
                   Always verify payment details with our support team if unsure.
                 </p>
               </div>
@@ -377,19 +377,19 @@ export default function PaymentMethodsPage() {
                 <h3 className="font-bold text-gray-900 mb-2">SSL Encryption</h3>
                 <p className="text-gray-600">All payments secured with 256-bit SSL encryption</p>
               </div>
-              
+
               <div className="bg-white border rounded-xl p-6 text-center">
                 <div className="text-4xl mb-4">🛡️</div>
                 <h3 className="font-bold text-gray-900 mb-2">Secure Gateways</h3>
                 <p className="text-gray-600">PCI-DSS compliant payment gateways</p>
               </div>
-              
+
               <div className="bg-white border rounded-xl p-6 text-center">
                 <div className="text-4xl mb-4">💰</div>
                 <h3 className="font-bold text-gray-900 mb-2">Escrow Protection</h3>
                 <p className="text-gray-600">Funds held securely until delivery confirmed</p>
               </div>
-              
+
               <div className="bg-white border rounded-xl p-6 text-center">
                 <div className="text-4xl mb-4">📱</div>
                 <h3 className="font-bold text-gray-900 mb-2">OTP Verification</h3>
@@ -404,12 +404,12 @@ export default function PaymentMethodsPage() {
             <p className="text-green-100 mb-8 max-w-2xl mx-auto">
               Browse our verified accounts and experience safe, secure payments
             </p>
-            <a
+            <Link
               href="/shop"
               className="inline-block px-8 py-3 bg-white text-green-600 rounded-xl font-bold text-lg hover:bg-gray-100 shadow-lg"
             >
               🛒 Browse Accounts & Pay Securely
-            </a>
+            </Link>
           </div>
 
           {/* Support Section */}

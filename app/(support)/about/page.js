@@ -17,12 +17,12 @@ export default function AboutPage() {
   useEffect(() => {
     // Load contact info from environment variables
     setContactInfo({
-      callNumber: process.env.NEXT_PUBLIC_CALL_NUMBER || "03091111111",
-      messageNumber: process.env.NEXT_PUBLIC_MESSAGE_NUMBER || "03091111111",
-      whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923091111111",
-      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "freefirelenden@gmail.com",
-      easypaisaNumber: process.env.NEXT_PUBLIC_EASYPAISA_NUMBER || "03091186959",
-      jazzcashNumber: process.env.NEXT_PUBLIC_JAZZCASH_NUMBER || "03091186959",
+      callNumber: process.env.NEXT_PUBLIC_CALL_NUMBER,
+      messageNumber: process.env.NEXT_PUBLIC_MESSAGE_NUMBER,
+      whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER,
+      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
+      easypaisaNumber: process.env.NEXT_PUBLIC_EASYPAISA_NUMBER,
+      jazzcashNumber: process.env.NEXT_PUBLIC_JAZZCASH_NUMBER,
       accountCommission: process.env.NEXT_PUBLIC_COMMISSION_PAR_ACCOUNT || "1",
       topupCommission: process.env.NEXT_PUBLIC_COMMISSION_PAR_TOPUP || "1"
     });
@@ -69,8 +69,8 @@ export default function AboutPage() {
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">About LendenFF</h1>
           <p className="text-xl text-blue-100 max-w-3xl">
-            Pakistan's most trusted Free Fire account marketplace. We're dedicated to providing safe, fast, 
-            and reliable services to the Pakistani gaming community.
+            {`Pakistan's most trusted Free Fire account marketplace. We're dedicated to providing safe, fast, 
+            and reliable services to the Pakistani gaming community.`}
           </p>
         </div>
       </div>
@@ -86,9 +86,9 @@ export default function AboutPage() {
               unverified platforms.
             </p>
             <p className="mb-4">
-              In 2023, we decided to build a solution that would eliminate scams and provide a seamless experience 
+             {` In 2023, we decided to build a solution that would eliminate scams and provide a seamless experience 
               for both buyers and sellers. Today, we're proud to be Pakistan's fastest-growing Free Fire marketplace, 
-              serving thousands of players with secure transactions and instant delivery.
+              serving thousands of players with secure transactions and instant delivery.`}
             </p>
             <p>
               Our mission is to build trust in the gaming community by providing verified sellers, secure payment 

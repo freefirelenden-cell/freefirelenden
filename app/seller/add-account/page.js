@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createAccount } from "@/lib/apiClient";
 import { useAuth } from "@/app/context/AuthProvider";
 import ProgressBar from "@/app/components/ui/ProgressBar";
 
@@ -12,13 +11,13 @@ export default function AddAccountPage() {
     const [progress, setProgress] = useState(0);
     const [tempImages, setTempImages] = useState([]);
     const [formData, setFormData] = useState({
-        title: "hello this is the test",
-        rank: "Bronze",
-        price: "5000",
-        description: "the quick brown fox jumps over the lazy dog",
-        uid: "12345678",
-        email: "X@gmail.com",
-        password: "12345678",
+        title: "",
+        rank: "",
+        price: "",
+        description: "",
+        uid: "",
+        email: "",
+        password: "",
         stats: {
             level: "",
             matches: "",
@@ -26,14 +25,42 @@ export default function AddAccountPage() {
             badges: ""
         },
         images: [],
-        status: "approved"
+        status: "approved",
+        isFeatured: false
     });
     const { user, isLoading } = useAuth()
-
     const ranks = ["Bronze", "Silver", "Gold", "Platinum", "Diamond", "Heroic", "Grandmaster"];
+
+
+
+
+    const validateUid = (uid) => {
+        // UID should be numeric and 8-12 digits typically
+        return /^\d{8,12}$/.test(uid);
+    };
+
+    const handleBlur = (e) => {
+        const { name, value } = e.target;
+
+        if (name === "uid" && value) {
+            if (!validateUid(value)) {
+                alert("UID must be 8-12 digits long");
+            }
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === "uid") {
+            // ✅ Only filter, no alert
+            const numericValue = value.replace(/[^\d]/g, '');
+            setFormData(prev => ({
+                ...prev,
+                [name]: numericValue
+            }));
+            return;
+        }
 
         if (name.startsWith("stats.")) {
             const statField = name.split(".")[1];
@@ -50,6 +77,14 @@ export default function AddAccountPage() {
                 [name]: value
             }));
         }
+    };
+
+    const cleanupTempImages = () => {
+        tempImages.forEach(img => {
+            if (img.url && img.url.startsWith("blob:")) {
+                URL.revokeObjectURL(img.url);
+            }
+        });
     };
 
     const selectFile = (e) => {
@@ -84,14 +119,71 @@ export default function AddAccountPage() {
     }
 
     const removeImage = (index) => {
-        setFormData(prev => ({
-            ...prev,
-            images: prev.images.filter((_, i) => i !== index)
-        }));
+        const imageToRemove = tempImages[index];
+
+        // ✅ Revoke blob URL to prevent memory leak
+        if (imageToRemove?.url?.startsWith("blob:")) {
+            URL.revokeObjectURL(imageToRemove.url);
+        }
+
+        setTempImages(prev => prev.filter((_, i) => i !== index));
+    };
+
+    useEffect(() => {
+        return () => {
+            cleanupTempImages();
+        };
+    }, []);
+
+    const validateForm = () => {
+        const errors = [];
+
+        if (!formData.title.trim()) {
+            errors.push("Account title is required");
+        }
+
+        if (!formData.rank) {
+            errors.push("Rank is required");
+        }
+
+        if (!formData.price || formData.price <= 1000) {
+            errors.push("Price must be at least PKR 1000");
+        }
+
+        if (!formData.uid.trim()) {
+            errors.push("UID is required");
+        }
+
+        if (formData.uid && !validateUid(formData.uid)) {
+            errors.push("UID must be 8-12 digits long and contain only numbers");
+        }
+
+        if (!formData.email.trim()) {
+            errors.push("Email is required");
+        }
+
+        if (!formData.email.includes('@')) {
+            errors.push("Valid email is required");
+        }
+
+        if (tempImages.length === 0) {
+            errors.push("At least one image is required");
+        }
+
+        if (errors.length > 0) {
+            alert(errors.join("\n"));
+            return false;
+        }
+
+        return true;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!validateForm()) {
+            return;
+        }
         setLoading(true);
         setProgress(10);
 
@@ -129,8 +221,13 @@ export default function AddAccountPage() {
                 if (!res.ok) throw new Error(`Upload failed for ${img.fileName}`);
 
                 const result = await res.json();
-                cleanedImages.push({ url: result.url, fileId: result.fileId });
-
+                cleanedImages.push({
+                    url: result.url,
+                    fileId: result.fileId,
+                    thumbnailUrl:
+                        result.thumbnailUrl ||
+                        `${result.url}?tr=w-300,h-300`
+                });
                 // optional: revoke object URL if using blob
                 if (img.url.startsWith("blob:")) {
                     URL.revokeObjectURL(img.url);
@@ -142,8 +239,19 @@ export default function AddAccountPage() {
             const finalForm = { ...formData, userId: user._id, images: cleanedImages };
             setProgress(90);
 
-            const uploadFormRes = await createAccount(finalForm);
+            const res = await fetch(`/api/accounts`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", },
+                body: JSON.stringify(finalForm),
+                cache: "no-store",
+            });
+
+            if (!res.ok) {
+                throw new Error(data.error || data.message || "Failed to create account");
+            }
+
             setProgress(100);
+            cleanupTempImages(); // ✅ Cleanup after successful upload
 
 
             alert("✅ Account created successfully!");
@@ -152,11 +260,13 @@ export default function AddAccountPage() {
 
         } catch (error) {
             console.error("Submit error:", error);
-            alert("Upload failed: " + error.message);
+            alert(error.message || "Upload failed! Please try again.");
         } finally {
             setLoading(false);
         }
     };
+
+
 
     const calculateSuggestedPrice = () => {
         const basePrices = {
@@ -219,9 +329,11 @@ export default function AddAccountPage() {
                             <select
                                 name="rank"
                                 value={formData.rank}
+                                required
                                 onChange={handleChange}
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             >
+                                <option value="" disabled>Select Rank</option> 
                                 {ranks.map(rank => (
                                     <option key={rank} value={rank}>{rank}</option>
                                 ))}
@@ -284,6 +396,7 @@ export default function AddAccountPage() {
                                 type="text"
                                 name="uid"
                                 value={formData.uid}
+                                onBlur={handleBlur}
                                 onChange={handleChange}
                                 placeholder="e.g., 1234567890"
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -319,7 +432,7 @@ export default function AddAccountPage() {
                                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                             />
                             <p className="text-xs text-gray-500 mt-2">
-                                We'll encrypt and store this securely
+                                {` We'll encrypt and store this securely`}
                             </p>
                         </div>
                     </div>

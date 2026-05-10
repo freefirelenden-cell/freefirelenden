@@ -142,7 +142,7 @@ export default function AdminDashboard() {
           <div className="flex justify-between items-start">
             <div>
               <div className="text-2xl font-bold text-red-700">PKR {stats.todayRevenue?.toLocaleString()}</div>
-              <div className="text-sm text-red-600">Today's Revenue</div>
+              <div className="text-sm text-red-600">{`Today's Revenue`}</div>
             </div>
             <div className="text-3xl">💰</div>
           </div>
@@ -232,7 +232,7 @@ export default function AdminDashboard() {
             <div className="flex justify-between items-center mb-6">
               <div>
                 <div className="text-2xl font-bold text-green-600">PKR {stats.todayRevenue?.toLocaleString()}</div>
-                <div className="text-sm text-gray-600">Today's Revenue</div>
+                <div className="text-sm text-gray-600">{`Today's Revenue`}</div>
               </div>
               <div className="text-right">
                 <div className="text-lg font-bold">PKR {stats.totalRevenue?.toLocaleString()}</div>

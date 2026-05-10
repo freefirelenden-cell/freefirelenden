@@ -1,13 +1,15 @@
-import { processDirectPayment } from "@/lib/paymentHandler";
+// /api/payments/process/route.js 
+import { processManualPayment } from "@/lib/paymentHandler";
 import Account from "@/models/Account";
 import { NextResponse } from "next/server";
 
 export async function POST(req) {
     try {
         const data = await req.json();
-        const { accountId, accountPrice, paymentMethod, name, email, phone, sellerId, seller, buyerId } = data
+        const { accountId, accountPrice, paymentMethod, sellerId, seller, buyerId, screenshot } = data
 
-        if (!accountId || !accountPrice || !name || !email || !phone || !sellerId || !buyerId || !seller) {
+
+        if (!accountId || !accountPrice || !sellerId || !buyerId || !seller) {
             return NextResponse.json(
                 { success: false, error: "Missing required fields" },
                 { status: 400 }
@@ -38,19 +40,18 @@ export async function POST(req) {
 
         const totalAmount = Number(accountPrice);
 
-        const paymentResult = await processDirectPayment({
+        const paymentResult = await processManualPayment({
             amount: totalAmount,
-            sellerPhone: seller.paymentAccount,
+            sellerPaymentAccount: seller.paymentAccount,
+            buyerPaymentAccount: data.paymentAccount, 
             paymentMethod,
             accountId,
             buyerId,
             sellerId,
+            screenshot,
         });
 
         if (paymentResult.success) {
-            // account.status = "sold";
-            // await account.save();
-
             return NextResponse.json(
                 { success: true, payment: paymentResult.data },
                 { status: 200 }

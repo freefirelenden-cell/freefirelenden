@@ -1,19 +1,8 @@
-"use client";
 
-import { useEffect, useState } from "react";
 
 export default function PrivacyPage() {
-  const [contactInfo, setContactInfo] = useState({
-    supportEmail: "",
-    whatsappNumber: ""
-  });
-
-  useEffect(() => {
-    setContactInfo({
-      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "freefirelenden@gmail.com",
-      whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "923091111111"
-    });
-  }, []);
+  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL
+  const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
@@ -27,11 +16,11 @@ export default function PrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
               <p className="mb-4">
-                At LendenFF, we are committed to protecting your privacy. This Privacy Policy explains how we collect, 
+                At LendenFF, we are committed to protecting your privacy. This Privacy Policy explains how we collect,
                 use, disclose, and safeguard your information when you use our Services.
               </p>
               <p>
-                By using our Services, you consent to the data practices described in this Privacy Policy. If you do 
+                By using our Services, you consent to the data practices described in this Privacy Policy. If you do
                 not agree with the terms of this Privacy Policy, please do not access or use our Services.
               </p>
             </section>
@@ -39,7 +28,7 @@ export default function PrivacyPage() {
             {/* Information We Collect */}
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Information We Collect</h2>
-              
+
               <h3 className="text-xl font-bold mb-3">2.1 Personal Information</h3>
               <p className="mb-4">We collect the following personal information:</p>
               <ul className="list-disc pl-6 mb-6 space-y-2">
@@ -80,7 +69,7 @@ export default function PrivacyPage() {
             {/* Information Sharing */}
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">4. Information Sharing and Disclosure</h2>
-              
+
               <h3 className="text-xl font-bold mb-3">4.1 When We Share Information</h3>
               <p className="mb-4">We may share your information with:</p>
               <ul className="list-disc pl-6 mb-6 space-y-2">
@@ -112,7 +101,7 @@ export default function PrivacyPage() {
                 <li>Regular backups and disaster recovery plans</li>
               </ul>
               <p className="mb-4">
-                However, no method of transmission over the Internet or electronic storage is 100% secure. 
+                However, no method of transmission over the Internet or electronic storage is 100% secure.
                 While we strive to protect your information, we cannot guarantee absolute security.
               </p>
             </section>
@@ -146,7 +135,7 @@ export default function PrivacyPage() {
                 <li><strong>Withdraw Consent:</strong> Withdraw consent at any time</li>
               </ul>
               <p>
-                To exercise these rights, contact us at {contactInfo.supportEmail}
+                To exercise these rights, contact us at {supportEmail}
               </p>
             </section>
 
@@ -161,7 +150,7 @@ export default function PrivacyPage() {
                 <li><strong>Advertising Cookies:</strong> To show relevant ads</li>
               </ul>
               <p className="mb-4">
-                You can control cookies through your browser settings. However, disabling cookies may affect 
+                You can control cookies through your browser settings. However, disabling cookies may affect
                 the functionality of our Services.
               </p>
             </section>
@@ -170,17 +159,17 @@ export default function PrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Third-Party Links</h2>
               <p className="mb-4">
-                Our Services may contain links to third-party websites. This Privacy Policy does not apply to 
+                Our Services may contain links to third-party websites. This Privacy Policy does not apply to
                 those websites. We encourage you to review the privacy policies of any third-party sites you visit.
               </p>
             </section>
 
             {/* Children's Privacy */}
             <section className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">10. Children's Privacy</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">{`10. Children's Privacy`}</h2>
               <p className="mb-4">
-                Our Services are not intended for children under 18 years of age. We do not knowingly collect 
-                personal information from children under 18. If we learn we have collected information from a 
+                Our Services are not intended for children under 18 years of age. We do not knowingly collect
+                personal information from children under 18. If we learn we have collected information from a
                 child under 18, we will delete that information promptly.
               </p>
             </section>
@@ -189,7 +178,7 @@ export default function PrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">11. International Data Transfers</h2>
               <p className="mb-4">
-                Your information may be transferred to and processed in countries other than Pakistan. 
+                Your information may be transferred to and processed in countries other than Pakistan.
                 We ensure appropriate safeguards are in place to protect your information during such transfers.
               </p>
             </section>
@@ -198,8 +187,8 @@ export default function PrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">12. Changes to Privacy Policy</h2>
               <p className="mb-4">
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting 
-                the new Privacy Policy on this page and updating the "Last updated" date.
+                {`We may update this Privacy Policy from time to time. We will notify you of any changes by posting
+                the new Privacy Policy on this page and updating the "Last updated" date.`}
               </p>
               <p>
                 We encourage you to review this Privacy Policy periodically for any changes.
@@ -211,10 +200,10 @@ export default function PrivacyPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">13. Contact Us</h2>
               <p className="mb-2">If you have questions about this Privacy Policy, contact us:</p>
               <p className="mb-2">
-                <strong>Email:</strong> {contactInfo.supportEmail}
+                <strong>Email:</strong> {supportEmail}
               </p>
               <p className="mb-2">
-                <strong>WhatsApp:</strong> {contactInfo.whatsappNumber}
+                <strong>WhatsApp:</strong> {whatsappNumber}
               </p>
               <p>
                 <strong>Response Time:</strong> We aim to respond to privacy inquiries within 48 hours.
@@ -225,7 +214,7 @@ export default function PrivacyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">14. Compliance with Pakistani Laws</h2>
               <p>
-                This Privacy Policy is designed to comply with applicable data protection laws in Pakistan, 
+                This Privacy Policy is designed to comply with applicable data protection laws in Pakistan,
                 including the Prevention of Electronic Crimes Act and any other relevant legislation.
               </p>
             </section>

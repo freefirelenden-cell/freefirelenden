@@ -14,9 +14,22 @@ export async function GET(req) {
     const minPrice = searchParams.get("minPrice");
     const maxPrice = searchParams.get("maxPrice");
     const sortBy = searchParams.get("sortBy") || "newest";
+    const status = searchParams.get("status");
 
-    // MongoDB filter object
-    let query = { status: "approved" };
+
+    let query = {
+      status: "approved"
+    };
+
+    if (status) {
+      if (status === "all") {
+        delete query.status; 
+      } else if (status.includes(",")) {
+        query.status = { $in: status.split(",") };
+      } else {
+        query.status = status;
+      }
+    }
 
     // Rank filter
     if (rank !== "all") {
@@ -70,12 +83,13 @@ export async function POST(req) {
 
     await connectDB();
     const body = await req.json();
-    // const images = Array.isArray(body.img)
-    //   ? body.img.map(img => ({
-    //     url: img.url?.toString(),
-    //     fileId: img.fileId?.toString(),
-    //   }))
-    //   : [];
+    const images = Array.isArray(body.images) 
+      ? body.images.map(img => ({
+          url: img.url?.toString(),
+          fileId: img.fileId?.toString(),
+          thumbnailUrl: img.thumbnailUrl?.toString() || img.url?.toString()
+        }))
+      : [];
 
     const stats = body.stats || {};
     stats.level = stats.level || 0;
@@ -87,14 +101,14 @@ export async function POST(req) {
       title: body.title,
       rank: body.rank,
       price: body.price,
-      images: body.images,
+      images: images,
       description: body.description,
       stats: stats,
       uid: body.uid,
       email: body.email,
       password: body.password,
       isFeatured: body.isFeatured || false,
-      status: body.status,
+      status: body.status || "pending",
       createdBy: body.userId,
     });
     await newAccount.save()

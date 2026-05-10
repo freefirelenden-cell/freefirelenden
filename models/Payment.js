@@ -34,12 +34,13 @@ const PaymentSchema = new mongoose.Schema({
 
   status: {
     type: String,
-    enum: ["pending", "confirmed", "failed"],
+    enum: ["pending", "seller_confirmed", "confirmed", "failed"],
     default: "pending"
   },
 
   instructions: String,
-  paymentUrl: String
+  paymentUrl: String,
+  screenshot: String,
 
 }, { timestamps: true });
 

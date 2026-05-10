@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getSellerRequests } from "@/lib/apiClient";
 
 export default function AdminSellerRequestsPage() {
     const [requests, setRequests] = useState([]);
@@ -13,10 +12,22 @@ export default function AdminSellerRequestsPage() {
 
     useEffect(() => {
         const load = async () => {
-            setLoading(true);
-            const data = await getSellerRequests(filter);
-            setRequests(data);
-            setLoading(false);
+            try {
+                setLoading(true);
+                const res = await fetch(`/api/admin/sellers?status=${filter}`,
+                    { cache: "no-store", }
+                );
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Failed to fetch seller requests");
+                }
+                setRequests(data);
+            } catch (error) {
+                console.error(error)
+            } finally {
+                setLoading(false);
+            }
         };
         load();
     }, [filter]);

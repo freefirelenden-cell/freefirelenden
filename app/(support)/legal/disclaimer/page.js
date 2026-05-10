@@ -1,19 +1,8 @@
-"use client";
 
-import { useEffect, useState } from "react";
 
 export default function DisclaimerPage() {
-  const [contactInfo, setContactInfo] = useState({
-    supportEmail: "",
-    callNumber: ""
-  });
-
-  useEffect(() => {
-    setContactInfo({
-      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "freefirelenden@gmail.com",
-      callNumber: process.env.NEXT_PUBLIC_CALL_NUMBER || "03091111111"
-    });
-  }, []);
+  const supportEmail =  process.env.NEXT_PUBLIC_SUPPORT_EMAIL
+  const callNumber =  process.env.NEXT_PUBLIC_CALL_NUMBER
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
@@ -41,8 +30,8 @@ export default function DisclaimerPage() {
                 endorsed by, sponsored by, or otherwise connected to Garena Free Fire or its parent company.
               </p>
               <p>
-                The information, products, and services offered on this platform are provided "as is" 
-                without any warranties or representations of any kind, either express or implied.
+                {`The information, products, and services offered on this platform are provided "as is" 
+                without any warranties or representations of any kind, either express or implied.`}
               </p>
             </section>
 
@@ -134,7 +123,7 @@ export default function DisclaimerPage() {
                 <li>The longevity of account access</li>
               </ul>
               <p>
-                All services are provided on an "as is" and "as available" basis without any warranty.
+                {`All services are provided on an "as is" and "as available" basis without any warranty.`}
               </p>
             </section>
 
@@ -232,10 +221,10 @@ export default function DisclaimerPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">13. Contact Information</h2>
               <p className="mb-2">For questions about this disclaimer, contact us:</p>
               <p className="mb-2">
-                <strong>Email:</strong> {contactInfo.supportEmail}
+                <strong>Email:</strong> {supportEmail}
               </p>
               <p>
-                <strong>Phone:</strong> {contactInfo.callNumber}
+                <strong>Phone:</strong> {callNumber}
               </p>
             </section>
 

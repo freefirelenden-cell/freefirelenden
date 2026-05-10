@@ -40,7 +40,7 @@ export default function AccountCard(account) {
         {images.length != 0 && images[currentImage]?.url ?
           (
              <Image
-            src={images[currentImage].url}
+            src={images[currentImage].thumbnailUrl}
             alt={title}
             fill
             className="object-cover"

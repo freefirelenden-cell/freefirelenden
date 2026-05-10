@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getAccountById } from "@/lib/apiClient";
 
 export default function AccountDetailPage() {
     const params = useParams();
@@ -20,13 +19,22 @@ export default function AccountDetailPage() {
             try {
                 setLoading(true);
 
-                const data = await getAccountById(params.accountId);
-                if (!data) {
+                // Direct API call
+                const res = await fetch(`/api/accounts/${params.accountId}`, {
+                    cache: "no-store",
+                });
+
+                const result = await res.json();
+
+                if (!res.ok || !result.account) {
                     setAccount(null);
                     return;
                 }
 
+                const data = result.account;
+
                 setAccount(data);
+
 
                 // Seller fetch
                 const sellerRes = await fetch(`/api/seller/${data.createdBy}`);
@@ -64,7 +72,7 @@ export default function AccountDetailPage() {
 
 
     const handleContactSeller = () => setShowContactInfo(true);
- 
+
 
     const rankColors = {
         Bronze: "bg-amber-800",
@@ -99,7 +107,7 @@ export default function AccountDetailPage() {
                         <div className="text-center py-20">
                             <div className="text-5xl mb-4">😕</div>
                             <h3 className="text-2xl font-bold mb-2">Account not found</h3>
-                            <p className="text-gray-600 mb-6">The requested account doesn't exist or has been removed.</p>
+                            <p className="text-gray-600 mb-6">{`The requested account doesn't exist or has been removed.`}</p>
                             <Link
                                 href="/shop"
                                 className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
@@ -392,7 +400,7 @@ export default function AccountDetailPage() {
                         <div className="bg-white border rounded-xl p-6 text-center">
                             <div className="text-3xl mb-4">💯</div>
                             <h4 className="font-bold mb-2">Buyer Protection</h4>
-                            <p className="text-gray-600">24-hour refund if account doesn't match description</p>
+                            <p className="text-gray-600">{`24-hour refund if account doesn't match description`}</p>
                         </div>
                     </div>
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 
@@ -135,7 +136,7 @@ export default function HowToBuyPage() {
           <div className="max-w-7xl mx-auto px-4">
             <h1 className="text-4xl md:text-5xl font-bold mb-6">How to Buy FF Accounts</h1>
             <p className="text-xl text-green-100 max-w-3xl">
-              Complete guide to safely purchase FF accounts on Pakistan's most trusted marketplace
+              {`Complete guide to safely purchase FF accounts on Pakistan's most trusted marketplace`}
             </p>
           </div>
         </div>
@@ -285,8 +286,8 @@ export default function HowToBuyPage() {
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-lg text-gray-900 mb-2">Q: What if I don't receive the account?</h4>
-                  <p className="text-gray-700">Contact support immediately. We'll track your order and ensure delivery. If undelivered, you get a full refund within 1 hour.</p>
+                  <h4 className="font-bold text-lg text-gray-900 mb-2">{`Q: What if I don't receive the account?`}</h4>
+                  <p className="text-gray-700">{`Contact support immediately. We'll track your order and ensure delivery. If undelivered, you get a full refund within 1 hour.`}</p>
                 </div>
 
                 <div>
@@ -308,12 +309,12 @@ export default function HowToBuyPage() {
             <p className="text-green-100 mb-8 max-w-2xl mx-auto">
               Join thousands of satisfied Pakistani Free Fire players who trust FreeFireLenden
             </p>
-            <a
+            <Link
               href="/shop"
               className="inline-block px-8 py-3 bg-white text-green-600 rounded-xl font-bold text-lg hover:bg-gray-100 shadow-lg"
             >
               🛒 Browse Available Accounts
-            </a>
+            </Link>
           </div>
 
           {/* Support Section */}

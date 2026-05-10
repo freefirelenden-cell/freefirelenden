@@ -8,7 +8,6 @@ import LoadingSpiner from "./components/ui/LoadingSpiner";
 
 export default function Home() {
   const CALL_NUMBER = process.env.NEXT_PUBLIC_CALL_NUMBER
-  const MESSAGE_NUMBER = process.env.NEXT_PUBLIC_MESSAGE_NUMBER
   const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
 
   const router = useRouter();
@@ -180,7 +179,7 @@ export default function Home() {
         <div className="relative z-10 text-center px-6 max-w-4xl">
           <div className="inline-flex items-center bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
             <span className="w-2 h-2 bg-yellow-500 rounded-full mr-2 animate-pulse"></span>
-            🇵🇰 Pakistan's #1 FF Marketplace
+           {` 🇵🇰 Pakistan's #1 FF Marketplace`}
           </div>
 
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold leading-tight drop-shadow-sm">
@@ -192,7 +191,7 @@ export default function Home() {
           </p>
 
           <p className="text-gray-700 text-lg md:text-xl mt-6 max-w-2xl mx-auto">
-            Pakistan's most trusted platform for FF account trading.
+           {` Pakistan's most trusted platform for FF account trading.`}
             <span className="text-blue-600 font-semibold"> Verified sellers</span>,
             <span className="text-green-600 font-semibold"> instant delivery</span>, and
             <span className="text-red-600 font-semibold"> 100% scam protection</span>.
@@ -297,7 +296,7 @@ export default function Home() {
               </div>
               <h3 className="text-2xl font-bold mb-4">24-Hour Buyer Protection</h3>
               <p className="text-gray-600">
-                Full refund if account doesn't match description. We mediate all disputes fairly.
+               {` Full refund if account doesn't match description. We mediate all disputes fairly.`}
               </p>
             </div>
           </div>
@@ -477,9 +476,9 @@ export default function Home() {
                   Live Support for Pakistani Players
                 </h3>
                 <p className="text-gray-700 mb-6">
-                  Our customer support team is available 24/7 to assist you in Urdu and English.
+                  {`Our customer support team is available 24/7 to assist you in Urdu and English.
                   Whether you need help with payment, account transfer, or have any questions,
-                  we're here to help!
+                  we're here to help!`}
                 </p>
                 <div className="flex items-center gap-4">
                   <a
@@ -534,7 +533,7 @@ export default function Home() {
               Become a Verified Seller
             </h2>
             <p className="text-blue-200 mt-4 text-lg max-w-3xl mx-auto">
-              Join Pakistan's most trusted FF marketplace and start earning today
+              {`Join Pakistan's most trusted FF marketplace and start earning today`}
             </p>
           </div>
 
@@ -615,7 +614,7 @@ export default function Home() {
                   }`}
               >
                 <div className="max-w-3xl mx-auto text-center">
-                  <div className="text-5xl mb-6">"</div>
+                  <div className="text-5xl mb-6">{`"`}</div>
                   <p className="text-2xl md:text-3xl font-medium text-gray-800 mb-8">
                     {testimonial.text}
                   </p>
@@ -661,7 +660,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700">
-                "Got my Diamond account in 5 minutes flat! Faster than any other service in Pakistan."
+                {`"Got my Diamond account in 5 minutes flat! Faster than any other service in Pakistan."`}
               </p>
             </div>
 
@@ -676,7 +675,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700">
-                "Previously got scammed twice on Facebook. LendenFF's verification saved me!"
+                {`"Previously got scammed twice on Facebook. LendenFF's verification saved me!"`}
               </p>
             </div>
 
@@ -691,7 +690,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-gray-700">
-                "Their WhatsApp support helped me at 3 AM when I had payment issues. Amazing service!"
+                {`"Their WhatsApp support helped me at 3 AM when I had payment issues. Amazing service!"`}
               </p>
             </div>
           </div>
@@ -740,7 +739,7 @@ export default function Home() {
 
           <div className="mt-12 text-center">
             <p className="text-gray-600 mb-4">
-              Still have questions? We're here to help!
+              {`Still have questions? We're here to help!`}
             </p>
             <Button
               text="Contact Support →"
@@ -803,8 +802,8 @@ export default function Home() {
               🇵🇰 Proudly Serving Pakistan Since 2023
             </p>
             <p className="opacity-90">
-              LendenFF is Pakistan's first and largest dedicated FF marketplace.
-              We're committed to providing safe, fast, and reliable services to the Pakistani gaming community.
+              {`LendenFF is Pakistan's first and largest dedicated FF marketplace.
+              We're committed to providing safe, fast, and reliable services to the Pakistani gaming community.`}
             </p>
           </div>
         </div>

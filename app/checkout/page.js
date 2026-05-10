@@ -3,9 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { getAccountById } from "@/lib/apiClient";
 import { useAuth } from "../context/AuthProvider";
-import Image from "next/image";
 
 
 export default function CheckoutPage() {
@@ -24,15 +22,18 @@ export default function CheckoutPage() {
   const [orderType, setOrderType] = useState(null);
   const { user, isSignedIn } = useAuth();
   const [account, setAccount] = useState(null)
+  const [screenshotFile, setScreenshotFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [seller, setSeller] = useState(null)
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "03000000000",
+    phone: "",
     paymentMethod: "jazzcash",
-    paymentAccount: "03000000000",
+    paymentAccount: "",
     termsAccepted: true,
-    marketingEmails: true, // ✅ ADD THIS
+    marketingEmails: true,
 
   });
 
@@ -76,7 +77,17 @@ export default function CheckoutPage() {
 
   const loadAccount = async (accountId) => {
     try {
-      const account = await getAccountById(accountId);
+
+      const res = await fetch(`/api/accounts/${accountId}`, {
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to fetch account");
+      }
+
+      const account =  data.account;
 
       if (!account) {
         router.push("/shop");
@@ -177,20 +188,64 @@ export default function CheckoutPage() {
     setStep(step - 1);
   };
 
+
+  useEffect(() => {
+    if (!account) return;
+    async function loadSeller() {
+      try {
+        const sellerResponse = await fetch(`/api/seller/${account.createdBy}`);
+        if (!sellerResponse.ok) {
+          throw new Error("Error fetching seller data");
+        }
+        const seller = await sellerResponse.json();
+        setSeller(seller)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+    loadSeller()
+  }, [account]);
+
+
+  const uploadToImageKit = async (file) => {
+    try {
+      setUploading(true);
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("fileName", `payment_${Date.now()}.jpg`);
+
+      const response = await fetch("/api/upload-payment-screenshot", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+
+      return data.fileUrl;
+    } catch (err) {
+      console.error("Upload error:", err);
+      throw err;
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handlePayment = async () => {
     if (!validateStep(step)) return;
-    setLoading(true)
+
+    if (!screenshotFile) {
+      alert("Please upload payment screenshot");
+      return;
+    }
+
+    setLoading(true);
 
     try {
-
-      const sellerResponse = await fetch(`/api/seller/${account.createdBy}`)
-
-      if (!sellerResponse.ok) {
-        console.error("Error fetching seller data:", sellerResponse.statusText);
-        return; // Yahan return ya error handling kar sakte ho
+      let screenshot = null;
+      if (screenshotFile) {
+        screenshot = await uploadToImageKit(screenshotFile);
       }
-      const seller = await sellerResponse.json(); // Response ko JSON format mein convert karna
-
 
 
       const paymentResponse = await fetch('/api/payments/process', {
@@ -201,24 +256,19 @@ export default function CheckoutPage() {
           accountPrice: account.price,
           sellerId: account.createdBy,
           seller,
-          buyerId: user._id,
+          buyerId: user?._id,
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          paymentMethod: formData.paymentMethod
+          paymentMethod: formData.paymentMethod,
+          paymentAccount: formData.paymentAccount,
+          screenshot
         })
       });
 
       const paymentResult = await paymentResponse.json();
-
-      if (!paymentResponse.ok) {
-        console.error(paymentResult.error || 'Server error');
-        throw new Error(paymentResult.error || 'Payment request failed');
-      }
-
-      if (!paymentResult.success) {
-        console.error(paymentResult.error || 'Payment failed');
-        throw new Error(paymentResult.error || 'Payment failed');
+      if (!paymentResponse.ok || !paymentResult.success) {
+        throw new Error(paymentResult?.error || "Payment failed");
       }
 
       const orderResponse = await fetch("/api/orders", {
@@ -228,55 +278,27 @@ export default function CheckoutPage() {
           accountId: account._id,
           paymentMethod: formData.paymentMethod,
           paymentAccount: formData.paymentAccount,
-          phone: formData.phone,
           paymentId: paymentResult.payment.paymentId,
+          phone: formData.phone,
           seller,
-          account
+          account,
+          screenshot
         }),
       });
 
       const orderResult = await orderResponse.json();
-
-      if (!paymentResult.success) {
-        alert(orderResult.error);
-        console.error(orderResult.error)
-        return;
-      }
       if (!orderResponse.ok) {
-        alert(orderResult.error);
-        console.error(orderResult.error)
-        return;
+        throw new Error(orderResult.error);
       }
 
-      await fetch(`/api/orders/${orderResult.orderId}/pay`, {
-        method: "PATCH",
-      });
-
-      const mailRes = await fetch("/api/send-mail", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sellerEmail: seller.email,
-          sellerPhone: seller.phone,
-          buyerEmail: formData.email,
-          buyerName: formData.name,
-          buyerPhone: formData.phone,
-          accountTitle: account.title,
-          email: account.email,
-          accountId: account._id,
-          amount: account.price,
-          orderId: orderResult.orderId
-        })
-      });
-
-
-      router.push(`/checkout/success?orderId=${orderResult.orderId}`);
+      // Redirect to success page with pending status
+      router.push(`/checkout/success?orderId=${orderResult.orderId}&status=pending`);
 
     } catch (err) {
-      alert("Server error");
-      console.error(err)
+      alert(err.message || "Server error");
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -288,16 +310,14 @@ export default function CheckoutPage() {
     // { id: "bank", name: "Bank Transfer", icon: "🏦", description: "Direct bank transfer" },
   ];
 
-  const getPaymentInstructions = (method) => {
+  const getPaymentInstructions = (method, accountNumber) => {
     switch (method) {
       case 'jazzcash':
-        return "Send payment to JazzCash: 0300-1234567";
+        return `Send payment to JazzCash: ${accountNumber}`;
       case 'easypaisa':
-        return "Send payment to EasyPaisa: 0315-1234567";
+        return `Send payment to EasyPaisa: ${accountNumber}`;
       case 'bank':
         return "Bank: HBL\nAccount: 1234567890\nIBAN: PK00HBL1234567890";
-      case 'cod':
-        return "Pay cash when you receive your order";
       default:
         return "Select payment method to see instructions";
     }
@@ -415,7 +435,7 @@ export default function CheckoutPage() {
                         {errors.phone && (
                           <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
                         )}
-                        <p className="text-sm text-gray-500 mt-1">We'll send order updates via SMS</p>
+                        <p className="text-sm text-gray-500 mt-1">{`We'll send order updates via SMS`}</p>
                       </div>
 
 
@@ -489,102 +509,40 @@ export default function CheckoutPage() {
 
                         <div className="mt-4 p-4 bg-blue-50 rounded-lg">
                           <div className="font-bold mb-2">Payment Instructions:</div>
-                          <div className="text-sm text-gray-700">{getPaymentInstructions(formData.paymentMethod)}</div>
+                          <div className="text-sm text-gray-700">{getPaymentInstructions(seller.paymentMethod, seller.paymentAccount)}</div>
                         </div>
                       </div>
                     )}
                   </div>
                 )}
 
-                {/* Step 3: Order Confirmation */}
-                {step === 3 && (
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-bold">Order Confirmation</h3>
-
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h4 className="font-bold mb-4">Order Summary</h4>
-
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
-                            <Image
-                              src={account.images?.[0]?.url || "/placeholder.jpg"}
-                              alt={account.title || "Account Image"}
-                              width={400}
-                              height={300}
-                              unoptimized
-                              className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-bold">{account.title}</div>
-                            {account.type === "account" ? (
-                              <div className="text-sm text-gray-600">
-                                Rank: {account.rank} • UID: {account.uid}
-                              </div>
-                            ) : (
-                              <div className="text-sm text-gray-600">
-                                Player ID: {account.playerId} • Server: {account.server}
-                              </div>
-                            )}
-
-                          </div>
-                          <div className="text-right">
-                            <div className="font-bold">PKR {account.price.toLocaleString()}</div>
-                          </div>
-                        </div>
+                {/* Screenshot Upload - Add this in step 3 */}
+                {step === 3 && formData.paymentMethod && (
+                  <div className="mt-6 p-4 border-2 border-dashed border-gray-300 rounded-lg">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      📸 Upload Payment Screenshot *
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      required
+                      onChange={(e) => setScreenshotFile(e.target.files[0])}
+                      className="w-full p-2 border rounded"
+                    />
+                    {uploading && (
+                      <div className="mt-2 text-blue-600">Uploading screenshot...</div>
+                    )}
+                    {screenshotFile && !uploading && (
+                      <div className="mt-2 text-green-600">
+                        ✅ Screenshot ready: {screenshotFile.name}
                       </div>
-                    </div>
-
-                    <div>
-                      <label className="flex items-start gap-3">
-                        <input
-                          type="checkbox"
-                          name="termsAccepted"
-                          checked={formData.termsAccepted}
-                          onChange={handleChange}
-                          className="mt-1"
-                        />
-                        <div>
-                          <span className="font-medium">I agree to the </span>
-                          <a href="/terms" className="text-blue-600 hover:underline">Terms & Conditions</a>
-                          <span className="font-medium"> and confirm that I have read the </span>
-                          <a href="/refund" className="text-blue-600 hover:underline">Refund Policy</a>
-                          <p className="text-gray-600 text-sm mt-1">
-                            I confirm that all information provided is accurate
-                          </p>
-                        </div>
-                      </label>
-                      {errors.termsAccepted && (
-                        <p className="text-red-500 text-sm mt-1">{errors.termsAccepted}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="flex items-center gap-3">
-                        <input
-                          type="checkbox"
-                          name="marketingEmails"
-                          checked={formData.marketingEmails}
-                          onChange={handleChange}
-                        />
-                        <span className="text-sm text-gray-600">
-                          Send me updates about new accounts, offers, and promotions
-                        </span>
-                      </label>
-                    </div>
-
-                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                      <h4 className="font-bold text-yellow-800 mb-2">⚠️ Important Notes</h4>
-                      <ul className="text-sm text-yellow-700 space-y-1">
-                        <li>• Delivery time: {account.delivery}</li>
-                        <li>• {account.warranty}</li>
-                        <li>• Keep your payment receipt for reference</li>
-                        <li>• Contact seller if delivery is delayed</li>
-                      </ul>
-                    </div>
+                    )}
+                    <p className="text-sm text-gray-500 mt-2">
+                      Upload clear screenshot showing transaction ID, amount, and sender number
+                    </p>
                   </div>
                 )}
+
 
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-8 pt-8 border-t">
@@ -657,7 +615,7 @@ export default function CheckoutPage() {
                 <div className="mt-6 p-4 bg-green-50 rounded-lg">
                   <div className="text-green-700 font-bold mb-2">✅ Buyer Protection Included</div>
                   <div className="text-sm text-green-600">
-                    24-hour refund if order doesn't match description
+                    {`24-hour refund if order doesn't match description`}
                   </div>
                 </div>
               </div>
@@ -707,7 +665,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <div className="text-sm text-gray-600 mt-4">
-                    We're here to help you with your purchase!
+                    {` We're here to help you with your purchase!`}
                   </div>
                 </div>
               </div>

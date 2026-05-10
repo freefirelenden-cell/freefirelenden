@@ -13,6 +13,7 @@ export default function SellerLayout({ children }) {
     { name: "Add Account", href: "/seller/add-account", icon: "➕" },
     { name: "My Accounts", href: "/seller/my-accounts", icon: "🎮" },
     { name: "Account Orders", href: "/seller/orders", icon: "📦" },
+      { name: "Verify Payment", href: "/seller/verify-payments", icon: "✅" },
     // { name: "Top-Up Orders", href: "/seller/topup-orders", icon: "💎" },
     // { name: "Profile", href: "/seller/profile", icon: "👤" },
     // { name: "Earnings", href: "/seller/earnings", icon: "💰" },

@@ -6,6 +6,7 @@ export async function GET(req, context) {
 
     const params = await context.params
     const { id } = params
+
     if (!id) {
         return new Response(JSON.stringify({ error: "Seller ID required" }), { status: 400 });
     }

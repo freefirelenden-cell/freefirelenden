@@ -1,20 +1,10 @@
-"use client";
 
-import { useEffect, useState } from "react";
 
 export default function TermsPage() {
-  const [contactInfo, setContactInfo] = useState({
-    supportEmail: "",
-    callNumber: ""
-  });
 
-  useEffect(() => {
-    setContactInfo({
-      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "freefirelenden@gmail.com",
-      callNumber: process.env.NEXT_PUBLIC_CALL_NUMBER || "03091111111"
-    });
-  }, []);
 
+  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL
+  const callNumber =  process.env.NEXT_PUBLIC_CALL_NUMBER
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-4xl mx-auto px-4 py-12">
@@ -27,8 +17,8 @@ export default function TermsPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
               <p className="mb-4">
-                Welcome to LendenFF ("we," "our," or "us"). These Terms and Conditions ("Terms") govern your access to and use of 
-                our website, services, and applications (collectively, the "Services").
+                {`Welcome to LendenFF ("we," "our," or "us"). These Terms and Conditions ("Terms") govern your access to and use of 
+                our website, services, and applications (collectively, the "Services").`}
               </p>
               <p>
                 By accessing or using our Services, you agree to be bound by these Terms. If you do not agree to these Terms, 
@@ -91,7 +81,7 @@ export default function TermsPage() {
                 <li>Share account credentials publicly</li>
                 <li>Use automated systems to access our Services</li>
                 <li>Sell accounts obtained through fraudulent means</li>
-                <li>Violate Free Fire's Terms of Service</li>
+                <li>{`Violate Free Fire's Terms of Service`}</li>
               </ul>
             </section>
 
@@ -115,7 +105,7 @@ export default function TermsPage() {
               <p className="mb-4">We offer the following protections to buyers:</p>
               <ul className="list-disc pl-6 mb-4 space-y-2">
                 <li>24-hour account verification period</li>
-                <li>Full refund if account doesn't match description</li>
+                <li>{`Full refund if account doesn't match description`}</li>
                 <li>Secure Gmail account transfer process</li>
                 <li>Mediation services for disputes</li>
                 <li>Verified seller system with ratings and reviews</li>
@@ -181,10 +171,10 @@ export default function TermsPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">12. Contact Information</h2>
               <p className="mb-2">For questions about these Terms, contact us at:</p>
               <p className="mb-2">
-                <strong>Email:</strong> {contactInfo.supportEmail}
+                <strong>Email:</strong> {supportEmail}
               </p>
               <p>
-                <strong>Phone:</strong> {contactInfo.callNumber}
+                <strong>Phone:</strong> {callNumber}
               </p>
             </section>
 

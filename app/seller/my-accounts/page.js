@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useAuth } from "@/app/context/AuthProvider";
-import { getAllAccounts } from "@/lib/apiClient";
 import Image from "next/image";
 
 export default function MyAccountsPage() {
@@ -19,8 +18,17 @@ export default function MyAccountsPage() {
     async function load() {
       if (isLoading) return
       try {
-        const res = await getAllAccounts(user.id);
-        setAccounts(res.accounts)
+        const res = await fetch(`/api/accounts?userId=${user._id}&status=all`,
+          { cache: "no-store" }
+        );
+
+        const data = await res.json();
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to fetch accounts");
+        }
+
+        const accounts = data.accounts || [];
+        setAccounts(accounts)
       } catch (error) {
         console.log(error)
       } finally {
@@ -185,7 +193,7 @@ export default function MyAccountsPage() {
                         <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden">
                           {account.images.length > 0 ? (
                             <Image
-                              src={account.images[0].url}
+                              src={account.images[0].thumbnailUrl}
                               alt={account.title}
                               width={48}
                               height={48}

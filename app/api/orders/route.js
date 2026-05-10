@@ -3,26 +3,37 @@ import { connectDB } from "@/lib/db";
 import Order from "@/models/Order";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import Account from "@/models/Account";
-import Seller from "@/models/Seller";
+import Account from "@/models/Account"; // ✅ Add this import
 
 
-// 🔹 GET — Fetch orders (all OR seller-specific)
+// 🔹 GET — Fetch orders (with filters)
 export async function GET(req) {
   try {
     await connectDB();
 
     const { searchParams } = new URL(req.url);
-    const sellerId = searchParams.get("id");
+    const sellerId = searchParams.get("sellerId");
+    const status = searchParams.get("status");
+    const paymentStatus = searchParams.get("paymentStatus");
+
 
     let query = {};
 
-    // ✅ If sellerId exists → filter orders
     if (sellerId) {
-      query.sellerId = sellerId;
+      query["seller.userId"] = sellerId;
     }
 
-    const orders = await Order.find(query).sort({ createdAt: -1 });
+    if (status) {
+      query.status = status;
+    }
+
+    if (paymentStatus) {
+      query["payment.status"] = paymentStatus;
+    }
+
+    const orders = await Order.find(query)
+      .populate("accountId")
+      .sort({ createdAt: -1 });
 
     return NextResponse.json(
       {
@@ -33,7 +44,7 @@ export async function GET(req) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("❌ GET /api/accounts/order error:", error);
+    console.error("❌ GET /api/orders error:", error);
 
     return NextResponse.json(
       {
@@ -46,8 +57,6 @@ export async function GET(req) {
   }
 }
 
-
-
 export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
@@ -58,13 +67,14 @@ export async function POST(req) {
     await connectDB();
 
     const body = await req.json();
-    const { accountId, paymentMethod, paymentAccount, paymentId, phone, seller, account } = body;
+    const { accountId, paymentMethod, paymentAccount, paymentId, phone, seller, account, screenshot } = body;
 
-    if (!accountId || !paymentMethod) {
-      return NextResponse.json({ error: "Missing data" }, { status: 400 });
+
+    if (!accountId || !paymentMethod || !paymentAccount || !paymentId || !phone || !seller || !account || !screenshot) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    
+
     if (!account) {
       return NextResponse.json({ error: "Account not found" }, { status: 404 });
     }
@@ -75,14 +85,13 @@ export async function POST(req) {
     const order = Order({
       accountId: account._id,
       price: account.price,
-
       buyer: {
         userId: session.user._id,
         name: session.user.name,
         email: session.user.email,
         phone,
+        paymentAccount: paymentAccount, // Add this
       },
-
       seller: {
         userId: seller.userId,
         name: seller.name,
@@ -90,13 +99,14 @@ export async function POST(req) {
         shopName: seller.shopName,
         phone: seller.phone,
       },
-
-
       payment: {
         method: paymentMethod,
-        paymentAccount: paymentAccount,
+        paymentAccount,
         paymentId,
+        screenshot,
+        status: "pending"
       },
+      status: "pending"
     });
     await order.save()
 

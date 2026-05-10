@@ -16,6 +16,7 @@ export default function AdminLayout({ children }) {
     { name: "Top-Up Orders", href: "/admin/all-topups", icon: "💎" },
     { name: "Seller Requests", href: "/admin/seller-requests", icon: "📝" },
     { name: "Reports", href: "/admin/reports", icon: "📈" },
+    { name: "Verify Payments", href: "/admin/verify-payments", icon: "💳" },
     { name: "Settings", href: "/admin/settings", icon: "⚙️" },
   ];
 
@@ -70,11 +71,10 @@ export default function AdminLayout({ children }) {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                      pathname === item.href
+                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${pathname === item.href
                         ? 'bg-red-50 text-red-600'
                         : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <span className="text-xl">{item.icon}</span>
                     {item.name}
@@ -84,7 +84,7 @@ export default function AdminLayout({ children }) {
 
               <div className="mt-8 pt-6 border-t">
                 <div className="px-4 py-3 bg-gray-50 rounded-lg">
-                  <div className="text-sm font-medium text-gray-600">Today's Stats</div>
+                  <div className="text-sm font-medium text-gray-600">{`Today's Stats`}</div>
                   <div className="text-xl font-bold">PKR 42,800</div>
                   <div className="text-xs text-gray-500">Revenue</div>
                 </div>
@@ -119,11 +119,10 @@ export default function AdminLayout({ children }) {
                         key={item.name}
                         href={item.href}
                         onClick={() => setIsSidebarOpen(false)}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg ${
-                          pathname === item.href
+                        className={`flex items-center gap-3 px-4 py-3 rounded-lg ${pathname === item.href
                             ? 'bg-red-50 text-red-600'
                             : 'text-gray-700 hover:bg-gray-50'
-                        }`}
+                          }`}
                       >
                         <span className="text-xl">{item.icon}</span>
                         {item.name}

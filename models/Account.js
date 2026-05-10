@@ -29,6 +29,7 @@ const accountSchema = new mongoose.Schema(
         {
           url: { type: String, required: true },
           fileId: { type: String, required: true },
+          thumbnailUrl: { type: String, required: true },
         },
       ],
       validate: [(val) => val.length <= 3, "Maximum 3 images allowed"],

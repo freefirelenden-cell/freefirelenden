@@ -1,37 +1,26 @@
-"use client";
-
-import { useEffect, useState } from "react";
 
 export default function RefundPolicyPage() {
-  const [contactInfo, setContactInfo] = useState({
-    supportEmail: "",
-    callNumber: ""
-  });
 
-  useEffect(() => {
-    setContactInfo({
-      supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || "freefirelenden@gmail.com",
-      callNumber: process.env.NEXT_PUBLIC_CALL_NUMBER || "03091111111"
-    });
-  }, []);
+  const supportEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL
+  const callNumber = process.env.NEXT_PUBLIC_CALL_NUMBER
 
   return (
     <div className="min-h-screen bg-gray-50 pt-20">
       <div className="max-w-4xl mx-auto px-4 py-12">
         <div className="bg-white rounded-xl shadow-sm border p-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">Refund & Cancellation Policy</h1>
-          <p className="text-gray-600 mb-8">Last updated: January 2024</p>
+          <p className="text-gray-600 mb-8">Last updated: May 2026</p>
 
           <div className="prose max-w-none text-gray-700">
             {/* Introduction */}
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
               <p className="mb-4">
-                This Refund & Cancellation Policy outlines the conditions under which refunds are granted and 
+                This Refund & Cancellation Policy outlines the conditions under which refunds are granted and
                 the cancellation procedures for transactions on LendenFF.
               </p>
               <p>
-                By using our Services, you agree to this policy. Please read it carefully before making any 
+                By using our Services, you agree to this policy. Please read it carefully before making any
                 purchases on our platform.
               </p>
             </section>
@@ -41,14 +30,14 @@ export default function RefundPolicyPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">2. 24-Hour Buyer Protection</h2>
               <p className="mb-4">We offer 24-hour buyer protection for all account purchases:</p>
               <ul className="list-disc pl-6 mb-4 space-y-2">
-                <li>Full refund if account doesn't match the description</li>
+                <li>{`Full refund if account doesn't match the description`}</li>
                 <li>Full refund if seller fails to deliver within 24 hours</li>
                 <li>Full refund if account is recovered by seller</li>
-                <li>Full refund if credentials don't work</li>
+                <li>{`Full refund if credentials don't work`}</li>
                 <li>Partial refund for minor discrepancies (case-by-case)</li>
               </ul>
               <p className="mb-4">
-                <strong>Important:</strong> Refund requests must be made within 24 hours of purchase. 
+                <strong>Important:</strong> Refund requests must be made within 24 hours of purchase.
                 After 24 hours, no refunds will be granted.
               </p>
             </section>
@@ -56,10 +45,10 @@ export default function RefundPolicyPage() {
             {/* Refund Eligibility */}
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Refund Eligibility Criteria</h2>
-              
+
               <h3 className="text-xl font-bold mb-3">3.1 Eligible for Full Refund</h3>
               <ul className="list-disc pl-6 mb-6 space-y-2">
-                <li>Account doesn't match the description (rank, level, items, etc.)</li>
+                <li>{`Account doesn't match the description (rank, level, items, etc.)`}</li>
                 <li>Account credentials provided are incorrect</li>
                 <li>Seller fails to deliver account within 24 hours</li>
                 <li>Account gets recovered/pulled back by seller</li>
@@ -72,7 +61,7 @@ export default function RefundPolicyPage() {
                 <li>Change of mind after purchase</li>
                 <li>Not liking the account after receiving it</li>
                 <li>Minor cosmetic differences not mentioned in description</li>
-                <li>Buyer's inability to access the account due to personal device issues</li>
+                <li>{`Buyer's inability to access the account due to personal device issues`}</li>
                 <li>Game bans or restrictions applied after purchase</li>
                 <li>Refund request made after 24 hours</li>
                 <li>Account modified by buyer after receipt</li>
@@ -91,7 +80,7 @@ export default function RefundPolicyPage() {
                 <li>If approved, refund will be processed within 3-5 business days</li>
               </ol>
               <p className="mb-4">
-                <strong>Evidence Required:</strong> Screenshots showing discrepancies, videos demonstrating 
+                <strong>Evidence Required:</strong> Screenshots showing discrepancies, videos demonstrating
                 login issues, chat logs with seller, etc.
               </p>
             </section>
@@ -127,7 +116,7 @@ export default function RefundPolicyPage() {
             {/* Cancellation Policy */}
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">7. Order Cancellation</h2>
-              
+
               <h3 className="text-xl font-bold mb-3">7.1 Buyer Cancellation</h3>
               <p className="mb-4">Buyers may cancel an order:</p>
               <ul className="list-disc pl-6 mb-6 space-y-2">
@@ -144,7 +133,7 @@ export default function RefundPolicyPage() {
                 <li>Mutual agreement with buyer</li>
               </ul>
               <p className="mb-4">
-                <strong>Penalty:</strong> Sellers who cancel orders without valid reason will receive a 
+                <strong>Penalty:</strong> Sellers who cancel orders without valid reason will receive a
                 negative rating and may face account suspension.
               </p>
             </section>
@@ -152,7 +141,7 @@ export default function RefundPolicyPage() {
             {/* Payment Method Refunds */}
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">8. Payment Method Specific Refunds</h2>
-              
+
               <h3 className="text-xl font-bold mb-3">8.1 JazzCash Refunds</h3>
               <ul className="list-disc pl-6 mb-4 space-y-2">
                 <li>Refund processing time: 1-3 business days</li>
@@ -208,7 +197,7 @@ export default function RefundPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">11. Force Majeure</h2>
               <p className="mb-4">
-                We are not liable for delays or failures in processing refunds due to circumstances beyond our 
+                We are not liable for delays or failures in processing refunds due to circumstances beyond our
                 control, including but not limited to:
               </p>
               <ul className="list-disc pl-6 mb-4 space-y-2">
@@ -224,7 +213,7 @@ export default function RefundPolicyPage() {
             <section className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4">12. Policy Updates</h2>
               <p className="mb-4">
-                We may update this Refund & Cancellation Policy from time to time. Changes will be effective 
+                We may update this Refund & Cancellation Policy from time to time. Changes will be effective
                 immediately upon posting on our website.
               </p>
               <p>
@@ -237,13 +226,13 @@ export default function RefundPolicyPage() {
               <h2 className="text-2xl font-bold text-gray-900 mb-4">13. Contact Information</h2>
               <p className="mb-2">For refund requests and questions, contact us:</p>
               <p className="mb-2">
-                <strong>Email:</strong> {contactInfo.supportEmail}
+                <strong>Email:</strong> {supportEmail}
               </p>
               <p>
-                <strong>Phone:</strong> {contactInfo.callNumber} (10 AM - 10 PM, 7 days a week)
+                <strong>Phone:</strong> {callNumber} (10 AM - 10 PM, 7 days a week)
               </p>
               <p className="mt-4">
-                <strong>Response Time:</strong> We aim to respond to refund requests within 24 hours 
+                <strong>Response Time:</strong> We aim to respond to refund requests within 24 hours
                 during business days.
               </p>
             </section>
@@ -254,7 +243,7 @@ export default function RefundPolicyPage() {
               <ul className="list-disc pl-6 text-yellow-700 space-y-2">
                 <li>Always verify account details before making payment</li>
                 <li>Keep screenshots of all transactions and conversations</li>
-                <li>Report issues immediately - don't wait until the last minute</li>
+                <li>{`Report issues immediately - don't wait until the last minute`}</li>
                 <li>Be honest in your refund claims - false claims may lead to account suspension</li>
                 <li>Refunds are processed to the original payment method only</li>
               </ul>

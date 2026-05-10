@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getAllAccounts } from "@/lib/apiClient";
 import { useAuth } from "../context/AuthProvider";
 
 export default function SellerDashboard() {
@@ -17,30 +16,51 @@ export default function SellerDashboard() {
 
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user, isLoading } = useAuth();
 
-  const { user, isLoading } = useAuth()
+
 
   useEffect(() => {
     if (!user || isLoading) return;
 
     async function load() {
       try {
-        const { accounts } = await getAllAccounts(user.id);
+        const res = await fetch(`/api/accounts?userId=${user._id}&status=all`,
+          { cache: "no-store" }
+        );
 
+        const data = await res.json();
+
+
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to fetch accounts");
+        }
+
+        const accounts = data.accounts || [];
         const totalAccounts = accounts.length;
 
-        const activeAccounts = accounts.filter(
-          acc => acc.status === "approved"
-        ).length;
+        const activeAccounts = accounts.filter(acc => acc.status === "approved").length;
+        const soldAccounts = accounts.filter(acc => acc.status === "sold").length;
+        const pendingOrders = accounts.filter(acc => acc.status === "pending").length;
 
-        const pendingOrders = accounts.filter(
-          acc => acc.status === "pending"
-        ).length;
+        const totalSales = soldAccounts;
 
-        // 👉 abhi sales / earnings ka data nahi hai
-        const totalSales = 0;
-        const totalEarnings = 0;
-        const thisMonthEarnings = 0;
+
+        // ✅ Calculate total earnings (sum of prices of sold accounts)
+        const totalEarnings = accounts
+          .filter(acc => acc.status === "sold")
+          .reduce((sum, acc) => sum + (acc.price || 0), 0);
+
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+        const thisMonthEarnings = accounts
+          .filter(acc => {
+            if (acc.status !== "sold") return false;
+            const soldDate = acc.updatedAt ? new Date(acc.updatedAt) : null;
+            return soldDate && soldDate >= startOfMonth;
+          })
+          .reduce((sum, acc) => sum + (acc.price || 0), 0);
 
         setStats({
           totalAccounts,
@@ -50,7 +70,7 @@ export default function SellerDashboard() {
           totalEarnings,
           thisMonthEarnings
         });
-     
+
 
       } catch (error) {
         console.error(error);
@@ -61,6 +81,28 @@ export default function SellerDashboard() {
 
     load();
   }, [user, isLoading]);
+
+
+
+  useEffect(() => {
+    if (user?._id) {
+      fetchSellerOrders();
+    }
+  }, [user, isLoading]);
+
+  const fetchSellerOrders = async () => {
+    try {
+      const res = await fetch(`/api/orders?sellerId=${user._id}`);
+      const data = await res.json();
+
+      if (data.success) {
+        setRecentOrders(data.orders || []);
+      }
+
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
 
 
 
@@ -78,7 +120,7 @@ export default function SellerDashboard() {
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Welcome back, John!</h1>
-        <p className="text-gray-600 mt-2">Here's your seller dashboard overview</p>
+        <p className="text-gray-600 mt-2">{`Here's your seller dashboard overview`}</p>
       </div>
 
       {/* Stats Grid */}
@@ -188,25 +230,35 @@ export default function SellerDashboard() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {recentOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">{order.id}</td>
-                  <td className="px-4 py-3 text-sm text-gray-900">{order.account}</td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{order.buyer}</td>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                    PKR {order.price.toLocaleString()}
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-blue-100 text-blue-800'
-                      }`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm text-gray-600">{order.date}</td>
-                </tr>
-              ))}
+              {recentOrders.map((order) => {
+                return (
+                  <tr key={order._id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                      {order._id?.slice(-8)} {/* Show last 8 chars of ID */}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-900">
+                      {order.accountId?.title || "N/A"} {/* Access account title */}
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {order.buyer?.name || "N/A"} {/* ✅ Access buyer.name, not the whole object */}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                      PKR {order.price?.toLocaleString() || 0}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-blue-100 text-blue-800'
+                        }`}>
+                        {order.status || "N/A"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-600">
+                      {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "N/A"}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

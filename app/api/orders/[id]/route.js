@@ -9,17 +9,11 @@ export async function GET(req, context) {
 
         // ✅ ID validation
         if (!params?.id) {
-            return NextResponse.json(
-                {
-                    success: false,
-                    message: "Order ID is required",
-                },
-                { status: 400 }
-            );
+            return NextResponse.json( {success: false,  message: "Order ID is required",}, { status: 400 });
         }
 
         // ✅ Fetch order
-        const order = await Order.findById(params.id);
+        const order = await Order.findByIdAndUpdate(params.id);
         
 
         // ✅ Order not found
