@@ -132,7 +132,7 @@ export default function Footer() {
                 <span className="text-yellow-400 mt-1">📞</span>
                 <div>
                   <p className="font-medium text-sm md:text-base">Phone</p>
-                  <p className="text-gray-400 text-sm">0309-1186958</p>
+                  <p className="text-gray-400 text-sm">03xx-xxxxxxx</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
